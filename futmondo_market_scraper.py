@@ -12,9 +12,11 @@ load_dotenv()
 
 USERNAME = os.getenv("FUTMONDO_USER")
 PASSWORD = os.getenv("FUTMONDO_PASS")
+CHAMPIONSHIPID = os.getenv("FUTMONDO_CHAMPIONSHIPID")
+USERTEAMID = os.getenv("FUTMONDO_USERTEAMID")
 API_URL = "https://api.futmondo.com/1/market/players"
 LOGIN_API_URL = "https://api.futmondo.com/5/login/with_mail"
-FILE_PATH = "futmondo_market.json"
+FILE_PATH = "data/futmondo_market.json"
 
 
 def futmondo_market_scraper_api():
@@ -57,8 +59,8 @@ def futmondo_market_scraper_api():
             payload = {
                 "header": {"token": session_token, "userid": session_userid},
                 "query": {
-                    "championshipId": "64f45b87f0ee1105e1ea0e9a",
-                    "userteamId": "64f49cfa016d860e1faabe35",
+                    "championshipId": CHAMPIONSHIPID,
+                    "userteamId": USERTEAMID,
                     "type": "market"
                 },
                 "answer": {}
