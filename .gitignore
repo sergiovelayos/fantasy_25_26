@@ -1,0 +1,15 @@
+# Contenido del archivo .gitignore
+.venv/
+.env
+__pycache__/
+docs/
+data/
+# Logs
+*.log
+logs/
+# Archivos temporales de notebooks
+.ipynb_checkpoints/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
