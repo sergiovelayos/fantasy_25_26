@@ -72,7 +72,7 @@ def insert_players(df):
     cur = conn.cursor()
 
     insert_sql = """
-    INSERT INTO public.futmondo_market_24_25 
+    INSERT INTO public.futmondo_market_25_26 
     (player_id, name, role, points, value, team, creation_date, expiration_date,
      price, computer, change, average, number_of_bids, user_team, inserted_at)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
