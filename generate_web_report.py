@@ -135,7 +135,39 @@ def get_top_signings(df_signings):
     top = df_signings.sort_values("price", ascending=False).head(10)
     return top
 
-def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings):
+def get_current_market():
+    """Devuelve los jugadores del último scrape disponible en el JSON."""
+    with open(MARKET_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if not data:
+        return pd.DataFrame()
+
+    last_run = data[-1]
+    rows = []
+    for p in last_run.get("jugadores", []):
+        avg_value = (
+            p.get("average", {}).get("average")
+            if isinstance(p.get("average"), dict)
+            else p.get("average")
+        )
+        rows.append({
+            "name": p.get("name"),
+            "team": p.get("team"),
+            "price": p.get("price"),
+            "points": p.get("points"),
+            "average": avg_value,
+            "expiration_date": p.get("expirationDate"),
+            "computer": p.get("computer", False),
+        })
+
+    df = pd.DataFrame(rows)
+    df = df[df["computer"] == True].copy()
+    df["expiration_date"] = pd.to_datetime(df["expiration_date"], errors="coerce", utc=True)
+    df.sort_values(["expiration_date", "points"], ascending=[True, False], inplace=True)
+    return df
+
+def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings, df_current_market):
     print("Generating HTML...")
     
     # Buyer Table Rows
@@ -160,6 +192,24 @@ def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings):
             <td>{row['buyer']}</td>
             <td>{row['price']:,.0f} €</td>
             <td class="text-sm text-gray-500">{row['signed_date'].strftime('%Y-%m-%d')}</td>
+        </tr>
+        """
+
+    # Current Market Rows
+    market_rows_html = ""
+    for _, row in df_current_market.iterrows():
+        exp_str = row['expiration_date'].strftime('%d/%m %H:%M') if pd.notna(row['expiration_date']) else "-"
+        avg_str = f"{row['average']:.1f}" if pd.notna(row['average']) else "-"
+        price_str = f"{row['price']:,.0f} €" if pd.notna(row['price']) else "-"
+        points_str = f"{int(row['points'])}" if pd.notna(row['points']) else "-"
+        market_rows_html += f"""
+        <tr>
+            <td class="py-2 px-3 font-medium">{row['name']}</td>
+            <td class="py-2 px-3 text-gray-500">{row['team']}</td>
+            <td class="py-2 px-3">{price_str}</td>
+            <td class="py-2 px-3 text-center">{avg_str}</td>
+            <td class="py-2 px-3 text-center">{points_str}</td>
+            <td class="py-2 px-3 text-sm text-orange-500">{exp_str}</td>
         </tr>
         """
 
@@ -256,8 +306,30 @@ def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings):
             </section>
         </div>
 
+        <!-- Section 4: Current Market -->
+        <section class="bg-white p-6 rounded-lg shadow-md mt-8">
+            <h2 class="text-2xl font-bold mb-6 border-b pb-2">Mercado Actual ({len(df_current_market)} jugadores)</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="py-2 px-3">Jugador</th>
+                            <th class="py-2 px-3">Equipo</th>
+                            <th class="py-2 px-3">Precio</th>
+                            <th class="py-2 px-3 text-center">Media</th>
+                            <th class="py-2 px-3 text-center">Puntos</th>
+                            <th class="py-2 px-3">Expira</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {market_rows_html}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <footer class="mt-12 text-center text-gray-500 text-sm">
-            <p>Generado automáticamente con Python & Gemini</p>
+            <p>Generado automáticamente con Python</p>
         </footer>
     </div>
 </body>
@@ -270,18 +342,21 @@ def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings):
 
 def main():
     df_m, df_s = load_data()
-    
+
     # 1. Conversion
     rate, offers, sales = analyze_conversion(df_m, df_s)
-    
+
     # 2. Overbids
     buyer_stats = analyze_overbids(df_m, df_s)
-    
+
     # 3. Top Signings
     top_signings = get_top_signings(df_s)
-    
-    # 4. Generate HTML
-    generate_html(rate, offers, sales, buyer_stats, top_signings)
+
+    # 4. Current Market
+    df_current_market = get_current_market()
+
+    # 5. Generate HTML
+    generate_html(rate, offers, sales, buyer_stats, top_signings, df_current_market)
 
 if __name__ == "__main__":
     main()

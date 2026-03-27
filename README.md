@@ -5,18 +5,39 @@ Este proyecto automatiza la extracción, el almacenamiento y el análisis de dat
 ## 🚀 Funcionalidades Principales
 
 *   **Scraping Automatizado:** Obtención de datos del mercado de jugadores en tiempo real.
-*   **Pipeline ETL:** Procesamiento de datos desde JSON a PostgreSQL para análisis a largo plazo.
-*   **Analíticas Avanzadas:** 
+*   **Pipeline ETL con carga delta:** Procesamiento incremental de datos desde JSON a PostgreSQL. Solo inserta registros nuevos (detectados por `scrape_fecha`) evitando duplicados mediante constraint `UNIQUE(player_id, creation_date, expiration_date)`.
+*   **Analíticas Avanzadas:**
     *   Tasa de conversión de jugadores del mercado (¿cuántos se compran realmente?).
     *   Comportamiento de los usuarios (porcentaje de sobrepuja respecto al valor de mercado).
     *   Ranking de los fichajes más caros.
-*   **Reporte Web:** Generación automática de un dashboard en HTML para visualización pública.
+*   **Mercado Actual:** Tabla con los jugadores disponibles hoy ofertados por la máquina (`computer=true`), ordenados por fecha de expiración y puntos.
+*   **Reporte Web:** Generación automática de un dashboard en HTML publicado en GitHub Pages.
 *   **Notificaciones:** Alertas vía Telegram.
 
 ## 📊 Visualización de Resultados
 
 Los resultados del análisis se publican automáticamente en:
 👉 **[https://sergiovelayos.github.io/fantasy_25_26/](https://sergiovelayos.github.io/fantasy_25_26/)**
+
+## ⏰ Automatización
+
+El proceso completo se ejecuta cada día a las **7:01 AM** mediante cron job en el Mac Mini:
+
+```
+1 7 * * * /ruta/run_futmondo.sh
+```
+
+El script `run_futmondo.sh` encadena:
+1. Scraping del mercado de Futmondo
+2. ETL delta → PostgreSQL
+3. Generación del reporte web
+4. Push automático a GitHub Pages vía SSH
+
+## 🗄️ Base de Datos (PostgreSQL)
+
+*   Tabla: `public.futmondo_market_25_26`
+*   Constraint única: `(player_id, creation_date, expiration_date)` — permite registrar al mismo jugador en distintos periodos de mercado.
+*   Campo `scrape_fecha`: fecha del primer scrape que capturó cada listing.
 
 ## 🛠️ Instalación y Configuración
 
@@ -40,10 +61,12 @@ Los resultados del análisis se publican automáticamente en:
 
 *   **Extraer datos del mercado:**
     `python futmondo_market_scraper.py`
-*   **Cargar datos en Base de Datos:**
+*   **Cargar datos en Base de Datos (delta):**
     `python etl/insert_mercado.py`
 *   **Generar el reporte web:**
     `python generate_web_report.py` (Actualiza `docs/index.html`)
+*   **Pipeline completo:**
+    `./run_futmondo.sh`
 
 ## 📂 Estructura del Proyecto
 
@@ -51,4 +74,5 @@ Los resultados del análisis se publican automáticamente en:
 *   `etl/`: Scripts de procesamiento e inserción en base de datos.
 *   `data/`: Almacenamiento local de datos en JSON y CSV.
 *   `generate_web_report.py`: Script principal de análisis y generación de reportes.
+*   `run_futmondo.sh`: Script de automatización completo (scraper + ETL + web + push).
 *   `telegram_utils.py`: Utilidades de notificación.
