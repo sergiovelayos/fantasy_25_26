@@ -105,6 +105,7 @@ def build_market_insights(signings, season, market_file=DEFAULT_MARKET_FILE):
         "show": season == "2025_2026",
         "buyer_rows": [],
         "top_rows": top_rows,
+        "top_overbid_rows": [],
     }
     if season != "2025_2026":
         return insights
@@ -149,6 +150,20 @@ def build_market_insights(signings, season, market_file=DEFAULT_MARKET_FILE):
             "tone": "text-emerald-700" if row["avg_overbid"] >= 0 else "text-rose-700",
         }
         for _, row in buyer_stats.iterrows()
+    ]
+    top_overbids = matched.sort_values(
+        ["overbid_pct", "signed_price", "signed_date"], ascending=[False, False, True]
+    ).head(10)
+    insights["top_overbid_rows"] = [
+        {
+            "player": esc(row["player_name"]),
+            "buyer": esc(row["buyer_name"]),
+            "market_price": format_money(row["market_price"]),
+            "signed_price": format_money(row["signed_price"]),
+            "overbid": f"{row['overbid_pct']:+.2f}%".replace(".", ","),
+            "date": row["signed_date"].strftime("%d/%m/%Y"),
+        }
+        for _, row in top_overbids.iterrows()
     ]
     return insights
 
@@ -455,6 +470,23 @@ def render_dashboard(summary, season, seasons=None):
         insights["top_rows"],
         [("player", "left"), ("buyer", "left"), ("price", "right"), ("date", "right")],
     )
+    top_overbid_rows = table_rows(
+        insights["top_overbid_rows"],
+        [
+            ("player", "left"),
+            ("buyer", "left"),
+            ("market_price", "right"),
+            ("signed_price", "right"),
+            ("overbid", "right"),
+            ("date", "right"),
+        ],
+    )
+    if not top_overbid_rows:
+        top_overbid_rows = """
+        <tr>
+            <td class="px-4 py-3 text-slate-500" colspan="6">No hay cruces suficientes con el histórico diario del mercado.</td>
+        </tr>
+        """
     market_insights_section = ""
     if insights["show"]:
         market_insights_section = f"""
@@ -480,6 +512,17 @@ def render_dashboard(summary, season, seasons=None):
                         <tbody class="divide-y divide-slate-100">{top_market_rows}</tbody>
                     </table>
                 </div>
+            </div>
+        </section>
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Top 10 Fichajes con Mayor Sobrepuja</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Jugador</th><th class="px-4 py-3">Comprador</th><th class="px-4 py-3 text-right">Precio mercado</th><th class="px-4 py-3 text-right">Precio fichaje</th><th class="px-4 py-3 text-right">Sobrepuja</th><th class="px-4 py-3 text-right">Fecha</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">{top_overbid_rows}</tbody>
+                </table>
             </div>
         </section>
         """
