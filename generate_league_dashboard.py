@@ -339,7 +339,7 @@ def build_summary(rankings_path, signings_path, season):
                 "spend": spend,
                 "sales": sale_count,
                 "income": income,
-                "net": spend - income,
+                "net": income - spend,
                 "spend_bar": round((spend / max_spend) * 100, 1),
                 "avg_price": float(info.get("avg_price", 0)),
                 "top_price": float(info.get("top_price", 0)),
