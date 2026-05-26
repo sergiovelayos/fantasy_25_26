@@ -61,10 +61,27 @@ El script `run_futmondo.sh` encadena:
 
 *   **Extraer datos del mercado:**
     `python futmondo_market_scraper.py`
+*   **Exportar todos los fichajes de prensa por temporada:**
+    `python export_pressroom.py --season 2025_2026`
+    - Si no se indica `--season`, el script intenta inferir la temporada a partir de las fechas descargadas.
+    - Guarda el JSON completo y un CSV limpio en `data/exports/<temporada>/`.
+*   **Importar un pressroom histórico ya descargado:**
+    `python import_pressroom_history.py "/ruta/pressroom_2024_2025.json" --season 2024_2025`
+    - Normaliza el JSON, elimina duplicados por `_id` y genera el CSV compatible con los dashboards.
+    - También acepta varios snapshots parciales: `python import_pressroom_history.py "/ruta/pressroom_1.json" "/ruta/pressroom_2.json" --season 2023_2024`.
+*   **Importar clasificaciones históricas ya descargadas:**
+    `python import_rankings_history.py "/ruta/clasificacion_todas_las_jornadas.json" "/ruta/ids_jornadas.json" --season 2024_2025`
+    - Cruza los IDs internos de jornada, genera la clasificación por jornada y deriva la general por suma de puntos.
+*   **Exportar la clasificación por jornadas:**
+    `python export_rankings.py --season 2025_2026`
+    - Descarga la clasificación general y las clasificaciones de las 38 jornadas.
+    - Guarda el JSON completo y CSVs en `data/exports/<temporada>/clasificacion/`.
 *   **Cargar datos en Base de Datos (delta):**
     `python etl/insert_mercado.py`
 *   **Generar el reporte web:**
     `python generate_web_report.py` (Actualiza `docs/index.html`)
+*   **Generar el dashboard resumen de liga:**
+    `python generate_league_dashboard.py` (Actualiza `docs/resumen_liga.html` y crea una página por temporada disponible)
 *   **Pipeline completo:**
     `./run_futmondo.sh`
 

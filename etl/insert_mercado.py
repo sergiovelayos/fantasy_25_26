@@ -2,6 +2,7 @@
 
 import os
 import json
+import time
 import psycopg2
 import pandas as pd
 from datetime import datetime
@@ -19,33 +20,64 @@ DB_PASS = os.getenv("DB_PASS")
 JSON_FILE = "data/futmondo_market.json"
 
 
-def connect_db():
-    """Crea conexión con Postgres usando las variables del .env"""
-    return psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS
-    )
+def connect_db(retries=5, delay=30):
+    """Crea conexión con Postgres. Reintenta hasta `retries` veces con `delay` segundos entre intentos."""
+    for attempt in range(1, retries + 1):
+        try:
+            return psycopg2.connect(
+                host=DB_HOST,
+                port=DB_PORT,
+                dbname=DB_NAME,
+                user=DB_USER,
+                password=DB_PASS
+            )
+        except psycopg2.OperationalError as e:
+            print(f"[Intento {attempt}/{retries}] Error conectando a DB: {e}")
+            if attempt < retries:
+                print(f"Reintentando en {delay} segundos...")
+                time.sleep(delay)
+            else:
+                raise
 
 
-def load_json():
-    """Carga el JSON acumulado de jugadores y lo convierte en DataFrame."""
+def get_last_checkpoint(conn):
+    """Devuelve la fecha de la última ejecución cargada en la DB, o None si está vacía."""
+    cur = conn.cursor()
+    cur.execute("SELECT MAX(scrape_fecha) FROM public.futmondo_market_25_26;")
+    result = cur.fetchone()[0]
+    cur.close()
+    return result
+
+
+def load_json_delta(since=None):
+    """Carga solo las ejecuciones del JSON más nuevas que 'since' (datetime o None).
+    Si since=None, carga todo (carga inicial).
+    """
     with open(JSON_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     all_players = []
-    for run in data:  # cada ejecución guardada en el JSON
+    runs_procesadas = 0
+
+    for run in data:
+        fecha_str = run.get("fecha")
+        try:
+            fecha_run = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S")
+        except (ValueError, TypeError):
+            continue
+
+        if since is not None and fecha_run <= since:
+            continue  # ya estaba cargada
+
+        runs_procesadas += 1
         for player in run.get("jugadores", []):
-            # Extraer average principal si es un dict
             avg_value = (
                 player.get("average", {}).get("average")
                 if isinstance(player.get("average"), dict)
                 else player.get("average")
             )
-
             player_data = {
+                "scrape_fecha": fecha_run,
                 "id": player.get("id"),
                 "name": player.get("name"),
                 "role": player.get("role"),
@@ -63,22 +95,23 @@ def load_json():
             }
             all_players.append(player_data)
 
+    print(f"Ejecuciones nuevas encontradas en JSON: {runs_procesadas}")
     return pd.DataFrame(all_players)
 
 
-def insert_players(df):
-    """Inserta jugadores en Postgres permitiendo múltiples apariciones en el mercado."""
-    conn = connect_db()
+def insert_players(df, conn):
+    """Inserta jugadores en Postgres. La columna scrape_fecha permite distinguir ejecuciones."""
     cur = conn.cursor()
 
     insert_sql = """
-    INSERT INTO public.futmondo_market_25_26 
+    INSERT INTO public.futmondo_market_25_26
     (player_id, name, role, points, value, team, creation_date, expiration_date,
-     price, computer, change, average, number_of_bids, user_team, inserted_at)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+     price, computer, change, average, number_of_bids, user_team, scrape_fecha, inserted_at)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
     ON CONFLICT ON CONSTRAINT unique_market_entry DO NOTHING;
     """
 
+    inserted = 0
     for _, row in df.iterrows():
         cur.execute(insert_sql, (
             row.get("id"),
@@ -94,22 +127,35 @@ def insert_players(df):
             row.get("change"),
             row.get("average"),
             row.get("number_of_bids"),
-            row.get("user_team")
+            row.get("user_team"),
+            row.get("scrape_fecha"),
         ))
+        inserted += cur.rowcount
 
     conn.commit()
     cur.close()
-    conn.close()
-    print(f"{len(df)} registros procesados e insertados (sin duplicados exactos).")
+    print(f"Filas nuevas insertadas en DB: {inserted} (de {len(df)} registros procesados).")
 
 
 def run_etl():
-    print("=== ETL Futmondo Market ===")
-    df = load_json()
+    print(f"=== ETL Futmondo Market — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ===")
+    conn = connect_db()
+
+    checkpoint = get_last_checkpoint(conn)
+    if checkpoint:
+        print(f"Checkpoint detectado: cargando datos posteriores a {checkpoint}")
+    else:
+        print("Sin checkpoint: carga inicial completa.")
+
+    df = load_json_delta(since=checkpoint)
+
     if df.empty:
-        print("No hay datos en el JSON.")
+        print("No hay ejecuciones nuevas para cargar.")
+        conn.close()
         return
-    insert_players(df)
+
+    insert_players(df, conn)
+    conn.close()
 
 
 if __name__ == "__main__":

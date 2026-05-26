@@ -233,6 +233,7 @@ def generate_html(conversion_rate, offers, sales, buyer_stats, top_signings, df_
         <header class="mb-10 text-center">
             <h1 class="text-4xl font-bold text-indigo-700 mb-2">Futmondo Market Analytics</h1>
             <p class="text-gray-600">Última actualización: {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+            <a href="resumen_liga.html" class="inline-flex mt-4 px-4 py-2 bg-indigo-700 text-white text-sm font-semibold hover:bg-indigo-800">Ver resumen de liga</a>
         </header>
 
         <!-- KPI Cards -->

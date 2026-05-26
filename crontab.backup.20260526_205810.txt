@@ -1,0 +1,6 @@
+
+0 22 * * * rsync -av --delete --exclude='.DS_Store' --exclude='.config/' /Users/macmini/Documents/viaje_china/ "sergio@192.168.0.100:/home/sergio/notas/notas_ubuntu/01\\ -\\ Proyectos/China\\ 2026/"
+1 7 * * * /Users/macmini/Public/fantasy_futmondo/scrap_futmondo/run_futmondo.sh
+30 8 * * 1 /bin/bash "/Users/macmini/Documents/viaje_china/scripts/fetch_reddit_cron.sh"
+0 11 * * 1 /bin/bash "/Users/macmini/Documents/viaje_china/scripts/check_digest.sh"
+0 9 * * 1 /Users/macmini/Public/taquilla/run_update.sh >> /Users/macmini/Public/taquilla/logs/cron.log 2>&1
