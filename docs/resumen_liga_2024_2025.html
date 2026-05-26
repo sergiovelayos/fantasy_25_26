@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen Liga Futmondo 2024-2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <header class="mb-8">
+            <div class="flex flex-col gap-4 border-b border-slate-300 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · 2024-2025</p>
+                    <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Resumen de liga</h1>
+                    <p class="mt-2 text-sm text-slate-600">Actualizado: 26/05/2026 22:43</p>
+                </div>
+                <div class="flex flex-col gap-3 sm:items-end">
+                    <label class="text-xs font-bold uppercase text-slate-500" for="season-select">Temporada</label>
+                    <select id="season-select" class="border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-900" onchange="changeSeason(this)" oninput="changeSeason(this)">
+                        <option value="resumen_liga_2023_2024.html">2023-2024</option>
+<option value="resumen_liga_2024_2025.html" selected>2024-2025</option>
+<option value="resumen_liga_2025_2026.html">2025-2026</option>
+                    </select>
+                    <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index.html">Mercado</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Jornadas</p>
+                <p class="mt-2 text-3xl font-extrabold">38</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Equipos en liga</p>
+                <p class="mt-2 text-3xl font-extrabold">9</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Fichajes con comprador</p>
+                <p class="mt-2 text-3xl font-extrabold">1.060</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Gasto total</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">34.848 M€</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Ventas</p>
+                <p class="mt-2 text-3xl font-extrabold">1.064</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Ingresos por ventas</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">32.695 M€</p>
+            </div>
+        </section>
+
+        
+        
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Dominio por jornada</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Jornadas ganadas</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">7</td></tr>
+<tr><td class="px-4 py-3">⭐⭐Heraso 🤴🏻</td><td class="px-4 py-3 text-center tabular-nums">7</td></tr>
+<tr><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-center tabular-nums">6</td></tr>
+<tr><td class="px-4 py-3">Alvaro Benito Camela</td><td class="px-4 py-3 text-center tabular-nums">5</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">5</td></tr>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">4</td></tr>
+<tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">3</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">1</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+        
+        
+        <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold">Ganador por vuelta</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr><th class="px-4 py-3">Vuelta</th><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-right">Puntos</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Primera vuelta</td><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-right tabular-nums">1463,3</td></tr>
+<tr><td class="px-4 py-3">Segunda vuelta</td><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-right tabular-nums">1566,2</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold">Resumen combinado</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Victorias</th><th class="px-4 py-3">Ritmo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Neto</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+        <tr>
+            <td class="px-4 py-3 font-semibold">McNostril Team</td>
+            <td class="px-4 py-3 text-center tabular-nums">7</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 100.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">220</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.430.028.335 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">217</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.115.855.906 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">314.172.429 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">⭐⭐Heraso 🤴🏻</td>
+            <td class="px-4 py-3 text-center tabular-nums">7</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 100.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">199</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.776.365.437 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">199</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.364.980.004 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">411.385.433 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Jesús Diego Cota</td>
+            <td class="px-4 py-3 text-center tabular-nums">6</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 85.7%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">128</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.941.382.209 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">128</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.567.983.088 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">373.399.121 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Sergio Velayos</td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 71.4%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">120</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.365.587.371 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">119</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.034.749.886 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">330.837.485 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Alvaro Benito Camela</td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 71.4%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">48</td>
+            <td class="px-4 py-3 text-right tabular-nums">2.543.577.946 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">52</td>
+            <td class="px-4 py-3 text-right tabular-nums">1.838.644.442 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">704.933.504 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">DiosSergio F.C</td>
+            <td class="px-4 py-3 text-center tabular-nums">4</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 57.1%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">112</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.077.082.493 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">113</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.224.748.502 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-147.666.009 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Los soldados de Rubiales</td>
+            <td class="px-4 py-3 text-center tabular-nums">3</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 42.9%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">203</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.752.386.780 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">199</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.270.579.791 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">481.806.989 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Northon</td>
+            <td class="px-4 py-3 text-center tabular-nums">1</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 14.3%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">30</td>
+            <td class="px-4 py-3 text-right tabular-nums">961.389.628 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">34</td>
+            <td class="px-4 py-3 text-right tabular-nums">1.223.769.837 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-262.380.209 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Al-Karrer</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">2</td>
+            <td class="px-4 py-3 text-right tabular-nums">21.366.206 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-21.366.206 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Filósofo sidas</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">1</td>
+            <td class="px-4 py-3 text-right tabular-nums">32.292.056 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-32.292.056 €</td>
+        </tr>
+        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Mercado de fichajes por equipo</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-right">Precio medio</th><th class="px-4 py-3 text-right">Fichaje más caro</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-center tabular-nums">128</td><td class="px-4 py-3 text-right tabular-nums">5.941.382.209 €</td><td class="px-4 py-3 text-right tabular-nums">46.417.049 €</td><td class="px-4 py-3 text-right tabular-nums">434.654.263 €</td></tr>
+<tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">203</td><td class="px-4 py-3 text-right tabular-nums">5.752.386.780 €</td><td class="px-4 py-3 text-right tabular-nums">28.336.881 €</td><td class="px-4 py-3 text-right tabular-nums">459.589.736 €</td></tr>
+<tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">220</td><td class="px-4 py-3 text-right tabular-nums">5.430.028.335 €</td><td class="px-4 py-3 text-right tabular-nums">24.681.947 €</td><td class="px-4 py-3 text-right tabular-nums">561.513.143 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">120</td><td class="px-4 py-3 text-right tabular-nums">5.365.587.371 €</td><td class="px-4 py-3 text-right tabular-nums">44.713.228 €</td><td class="px-4 py-3 text-right tabular-nums">349.798.320 €</td></tr>
+<tr><td class="px-4 py-3">⭐⭐Heraso 🤴🏻</td><td class="px-4 py-3 text-center tabular-nums">199</td><td class="px-4 py-3 text-right tabular-nums">4.776.365.437 €</td><td class="px-4 py-3 text-right tabular-nums">24.001.836 €</td><td class="px-4 py-3 text-right tabular-nums">278.217.631 €</td></tr>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">112</td><td class="px-4 py-3 text-right tabular-nums">4.077.082.493 €</td><td class="px-4 py-3 text-right tabular-nums">36.402.522 €</td><td class="px-4 py-3 text-right tabular-nums">331.241.185 €</td></tr>
+<tr><td class="px-4 py-3">Alvaro Benito Camela</td><td class="px-4 py-3 text-center tabular-nums">48</td><td class="px-4 py-3 text-right tabular-nums">2.543.577.946 €</td><td class="px-4 py-3 text-right tabular-nums">52.991.207 €</td><td class="px-4 py-3 text-right tabular-nums">417.462.369 €</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">30</td><td class="px-4 py-3 text-right tabular-nums">961.389.628 €</td><td class="px-4 py-3 text-right tabular-nums">32.046.321 €</td><td class="px-4 py-3 text-right tabular-nums">80.808.080 €</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Ventas por equipo</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Venta media</th><th class="px-4 py-3 text-right">Venta más cara</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">217</td><td class="px-4 py-3 text-right tabular-nums">5.115.855.906 €</td><td class="px-4 py-3 text-right tabular-nums">23.575.373 €</td><td class="px-4 py-3 text-right tabular-nums">434.654.263 €</td></tr>
+<tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">199</td><td class="px-4 py-3 text-right tabular-nums">5.270.579.791 €</td><td class="px-4 py-3 text-right tabular-nums">26.485.326 €</td><td class="px-4 py-3 text-right tabular-nums">378.311.630 €</td></tr>
+<tr><td class="px-4 py-3">⭐⭐Heraso 🤴🏻</td><td class="px-4 py-3 text-center tabular-nums">199</td><td class="px-4 py-3 text-right tabular-nums">4.364.980.004 €</td><td class="px-4 py-3 text-right tabular-nums">21.934.573 €</td><td class="px-4 py-3 text-right tabular-nums">245.833.363 €</td></tr>
+<tr><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-center tabular-nums">128</td><td class="px-4 py-3 text-right tabular-nums">5.567.983.088 €</td><td class="px-4 py-3 text-right tabular-nums">43.499.868 €</td><td class="px-4 py-3 text-right tabular-nums">561.513.143 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">119</td><td class="px-4 py-3 text-right tabular-nums">5.034.749.886 €</td><td class="px-4 py-3 text-right tabular-nums">42.308.823 €</td><td class="px-4 py-3 text-right tabular-nums">459.589.736 €</td></tr>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">113</td><td class="px-4 py-3 text-right tabular-nums">4.224.748.502 €</td><td class="px-4 py-3 text-right tabular-nums">37.387.155 €</td><td class="px-4 py-3 text-right tabular-nums">437.165.433 €</td></tr>
+<tr><td class="px-4 py-3">Alvaro Benito Camela</td><td class="px-4 py-3 text-center tabular-nums">52</td><td class="px-4 py-3 text-right tabular-nums">1.838.644.442 €</td><td class="px-4 py-3 text-right tabular-nums">35.358.547 €</td><td class="px-4 py-3 text-right tabular-nums">257.909.623 €</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">34</td><td class="px-4 py-3 text-right tabular-nums">1.223.769.837 €</td><td class="px-4 py-3 text-right tabular-nums">35.993.230 €</td><td class="px-4 py-3 text-right tabular-nums">124.846.213 €</td></tr>
+<tr><td class="px-4 py-3">Al-Karrer</td><td class="px-4 py-3 text-center tabular-nums">2</td><td class="px-4 py-3 text-right tabular-nums">21.366.206 €</td><td class="px-4 py-3 text-right tabular-nums">10.683.103 €</td><td class="px-4 py-3 text-right tabular-nums">18.366.206 €</td></tr>
+<tr><td class="px-4 py-3">Filósofo sidas</td><td class="px-4 py-3 text-center tabular-nums">1</td><td class="px-4 py-3 text-right tabular-nums">32.292.056 €</td><td class="px-4 py-3 text-right tabular-nums">32.292.056 €</td><td class="px-4 py-3 text-right tabular-nums">32.292.056 €</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 class="text-xl font-bold">Clasificación acumulada</h2>
+                <label class="text-sm font-semibold text-slate-700">
+                    Jornada
+                    <select id="round-ranking-select" class="ml-2 border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-900">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38" selected>38</option>
+                    </select>
+                </label>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3 text-center">Ranking</th><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-right">Puntos acumulados</th></tr>
+                    </thead>
+                    <tbody id="round-ranking-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+        
+    </main>
+    <script>
+        const cumulativeRankings = [{"round": 1, "rank": 1, "team": "DiosSergio F.C", "points": 77.7}, {"round": 1, "rank": 2, "team": "McNostril Team", "points": 72.7}, {"round": 1, "rank": 3, "team": "Alvaro Benito Camela", "points": 71.1}, {"round": 1, "rank": 4, "team": "Los soldados de Rubiales", "points": 62.8}, {"round": 1, "rank": 5, "team": "Northon", "points": 62.4}, {"round": 1, "rank": 6, "team": "Jesús Diego Cota", "points": 55.9}, {"round": 1, "rank": 7, "team": "Sergio Velayos", "points": 52.5}, {"round": 1, "rank": 8, "team": "⭐⭐Heraso 🤴🏻", "points": 48.9}, {"round": 1, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 2, "rank": 1, "team": "⭐⭐Heraso 🤴🏻", "points": 153.0}, {"round": 2, "rank": 2, "team": "McNostril Team", "points": 149.1}, {"round": 2, "rank": 3, "team": "Los soldados de Rubiales", "points": 148.2}, {"round": 2, "rank": 4, "team": "Northon", "points": 140.7}, {"round": 2, "rank": 5, "team": "DiosSergio F.C", "points": 140.4}, {"round": 2, "rank": 6, "team": "Alvaro Benito Camela", "points": 134.0}, {"round": 2, "rank": 7, "team": "Jesús Diego Cota", "points": 133.2}, {"round": 2, "rank": 8, "team": "Sergio Velayos", "points": 120.9}, {"round": 2, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 3, "rank": 1, "team": "DiosSergio F.C", "points": 226.7}, {"round": 3, "rank": 2, "team": "Jesús Diego Cota", "points": 213.9}, {"round": 3, "rank": 3, "team": "Los soldados de Rubiales", "points": 211.4}, {"round": 3, "rank": 4, "team": "McNostril Team", "points": 208.0}, {"round": 3, "rank": 5, "team": "Northon", "points": 204.7}, {"round": 3, "rank": 6, "team": "⭐⭐Heraso 🤴🏻", "points": 201.4}, {"round": 3, "rank": 7, "team": "Sergio Velayos", "points": 196.4}, {"round": 3, "rank": 8, "team": "Alvaro Benito Camela", "points": 182.1}, {"round": 3, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 4, "rank": 1, "team": "Jesús Diego Cota", "points": 286.7}, {"round": 4, "rank": 2, "team": "Northon", "points": 285.5}, {"round": 4, "rank": 3, "team": "DiosSergio F.C", "points": 284.9}, {"round": 4, "rank": 4, "team": "McNostril Team", "points": 284.4}, {"round": 4, "rank": 5, "team": "Los soldados de Rubiales", "points": 276.6}, {"round": 4, "rank": 6, "team": "⭐⭐Heraso 🤴🏻", "points": 275.4}, {"round": 4, "rank": 7, "team": "Sergio Velayos", "points": 258.1}, {"round": 4, "rank": 8, "team": "Alvaro Benito Camela", "points": 239.0}, {"round": 4, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 5, "rank": 1, "team": "McNostril Team", "points": 363.4}, {"round": 5, "rank": 2, "team": "Northon", "points": 361.0}, {"round": 5, "rank": 3, "team": "Jesús Diego Cota", "points": 359.4}, {"round": 5, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 357.5}, {"round": 5, "rank": 5, "team": "Los soldados de Rubiales", "points": 346.5}, {"round": 5, "rank": 6, "team": "DiosSergio F.C", "points": 337.6}, {"round": 5, "rank": 7, "team": "Sergio Velayos", "points": 337.6}, {"round": 5, "rank": 8, "team": "Alvaro Benito Camela", "points": 288.8}, {"round": 5, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 6, "rank": 1, "team": "McNostril Team", "points": 460.2}, {"round": 6, "rank": 2, "team": "Jesús Diego Cota", "points": 447.9}, {"round": 6, "rank": 3, "team": "Northon", "points": 446.1}, {"round": 6, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 419.3}, {"round": 6, "rank": 5, "team": "DiosSergio F.C", "points": 413.6}, {"round": 6, "rank": 6, "team": "Los soldados de Rubiales", "points": 395.6}, {"round": 6, "rank": 7, "team": "Sergio Velayos", "points": 383.7}, {"round": 6, "rank": 8, "team": "Alvaro Benito Camela", "points": 354.1}, {"round": 6, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 7, "rank": 1, "team": "McNostril Team", "points": 523.6}, {"round": 7, "rank": 2, "team": "Northon", "points": 504.9}, {"round": 7, "rank": 3, "team": "Jesús Diego Cota", "points": 490.3}, {"round": 7, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 477.9}, {"round": 7, "rank": 5, "team": "DiosSergio F.C", "points": 473.1}, {"round": 7, "rank": 6, "team": "Sergio Velayos", "points": 429.5}, {"round": 7, "rank": 7, "team": "Los soldados de Rubiales", "points": 424.1}, {"round": 7, "rank": 8, "team": "Alvaro Benito Camela", "points": 423.7}, {"round": 7, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 8, "rank": 1, "team": "McNostril Team", "points": 603.6}, {"round": 8, "rank": 2, "team": "Jesús Diego Cota", "points": 583.0}, {"round": 8, "rank": 3, "team": "Northon", "points": 571.8}, {"round": 8, "rank": 4, "team": "DiosSergio F.C", "points": 560.1}, {"round": 8, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 539.9}, {"round": 8, "rank": 6, "team": "Alvaro Benito Camela", "points": 517.4}, {"round": 8, "rank": 7, "team": "Sergio Velayos", "points": 485.3}, {"round": 8, "rank": 8, "team": "Los soldados de Rubiales", "points": 475.2}, {"round": 8, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 9, "rank": 1, "team": "McNostril Team", "points": 700.1}, {"round": 9, "rank": 2, "team": "Jesús Diego Cota", "points": 671.9}, {"round": 9, "rank": 3, "team": "DiosSergio F.C", "points": 629.6}, {"round": 9, "rank": 4, "team": "Northon", "points": 628.5}, {"round": 9, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 621.1}, {"round": 9, "rank": 6, "team": "Alvaro Benito Camela", "points": 597.8}, {"round": 9, "rank": 7, "team": "Sergio Velayos", "points": 553.9}, {"round": 9, "rank": 8, "team": "Los soldados de Rubiales", "points": 540.1}, {"round": 9, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 10, "rank": 1, "team": "McNostril Team", "points": 789.2}, {"round": 10, "rank": 2, "team": "Jesús Diego Cota", "points": 756.5}, {"round": 10, "rank": 3, "team": "DiosSergio F.C", "points": 708.7}, {"round": 10, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 707.3}, {"round": 10, "rank": 5, "team": "Northon", "points": 686.5}, {"round": 10, "rank": 6, "team": "Alvaro Benito Camela", "points": 681.9}, {"round": 10, "rank": 7, "team": "Los soldados de Rubiales", "points": 627.2}, {"round": 10, "rank": 8, "team": "Sergio Velayos", "points": 625.8}, {"round": 10, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 11, "rank": 1, "team": "McNostril Team", "points": 886.9}, {"round": 11, "rank": 2, "team": "Jesús Diego Cota", "points": 837.5}, {"round": 11, "rank": 3, "team": "DiosSergio F.C", "points": 759.5}, {"round": 11, "rank": 4, "team": "Northon", "points": 752.9}, {"round": 11, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 751.9}, {"round": 11, "rank": 6, "team": "Alvaro Benito Camela", "points": 745.9}, {"round": 11, "rank": 7, "team": "Los soldados de Rubiales", "points": 707.2}, {"round": 11, "rank": 8, "team": "Sergio Velayos", "points": 698.2}, {"round": 11, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 12, "rank": 1, "team": "McNostril Team", "points": 947.5}, {"round": 12, "rank": 2, "team": "Jesús Diego Cota", "points": 927.4}, {"round": 12, "rank": 3, "team": "DiosSergio F.C", "points": 831.2}, {"round": 12, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 829.6}, {"round": 12, "rank": 5, "team": "Northon", "points": 825.4}, {"round": 12, "rank": 6, "team": "Alvaro Benito Camela", "points": 805.7}, {"round": 12, "rank": 7, "team": "Los soldados de Rubiales", "points": 800.7}, {"round": 12, "rank": 8, "team": "Sergio Velayos", "points": 770.0}, {"round": 12, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 13, "rank": 1, "team": "McNostril Team", "points": 1009.5}, {"round": 13, "rank": 2, "team": "Jesús Diego Cota", "points": 995.3}, {"round": 13, "rank": 3, "team": "DiosSergio F.C", "points": 913.8}, {"round": 13, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 901.4}, {"round": 13, "rank": 5, "team": "Northon", "points": 881.0}, {"round": 13, "rank": 6, "team": "Los soldados de Rubiales", "points": 869.2}, {"round": 13, "rank": 7, "team": "Alvaro Benito Camela", "points": 862.8}, {"round": 13, "rank": 8, "team": "Sergio Velayos", "points": 830.1}, {"round": 13, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 14, "rank": 1, "team": "Jesús Diego Cota", "points": 1087.7}, {"round": 14, "rank": 2, "team": "McNostril Team", "points": 1086.2}, {"round": 14, "rank": 3, "team": "DiosSergio F.C", "points": 993.3}, {"round": 14, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 978.9}, {"round": 14, "rank": 5, "team": "Alvaro Benito Camela", "points": 947.0}, {"round": 14, "rank": 6, "team": "Northon", "points": 937.2}, {"round": 14, "rank": 7, "team": "Los soldados de Rubiales", "points": 933.6}, {"round": 14, "rank": 8, "team": "Sergio Velayos", "points": 893.0}, {"round": 14, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 15, "rank": 1, "team": "Jesús Diego Cota", "points": 1183.4}, {"round": 15, "rank": 2, "team": "McNostril Team", "points": 1144.4}, {"round": 15, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1058.7}, {"round": 15, "rank": 4, "team": "DiosSergio F.C", "points": 1048.3}, {"round": 15, "rank": 5, "team": "Alvaro Benito Camela", "points": 1004.9}, {"round": 15, "rank": 6, "team": "Los soldados de Rubiales", "points": 999.6}, {"round": 15, "rank": 7, "team": "Northon", "points": 987.3}, {"round": 15, "rank": 8, "team": "Sergio Velayos", "points": 968.8}, {"round": 15, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 16, "rank": 1, "team": "Jesús Diego Cota", "points": 1260.2}, {"round": 16, "rank": 2, "team": "McNostril Team", "points": 1201.8}, {"round": 16, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1130.5}, {"round": 16, "rank": 4, "team": "DiosSergio F.C", "points": 1122.6}, {"round": 16, "rank": 5, "team": "Alvaro Benito Camela", "points": 1097.6}, {"round": 16, "rank": 6, "team": "Los soldados de Rubiales", "points": 1083.2}, {"round": 16, "rank": 7, "team": "Sergio Velayos", "points": 1052.3}, {"round": 16, "rank": 8, "team": "Northon", "points": 1050.6}, {"round": 16, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 17, "rank": 1, "team": "Jesús Diego Cota", "points": 1320.9}, {"round": 17, "rank": 2, "team": "McNostril Team", "points": 1290.7}, {"round": 17, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1211.7}, {"round": 17, "rank": 4, "team": "DiosSergio F.C", "points": 1180.0}, {"round": 17, "rank": 5, "team": "Alvaro Benito Camela", "points": 1160.7}, {"round": 17, "rank": 6, "team": "Los soldados de Rubiales", "points": 1160.6}, {"round": 17, "rank": 7, "team": "Sergio Velayos", "points": 1133.5}, {"round": 17, "rank": 8, "team": "Northon", "points": 1113.7}, {"round": 17, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 18, "rank": 1, "team": "Jesús Diego Cota", "points": 1403.9}, {"round": 18, "rank": 2, "team": "McNostril Team", "points": 1370.4}, {"round": 18, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1271.8}, {"round": 18, "rank": 4, "team": "Los soldados de Rubiales", "points": 1240.0}, {"round": 18, "rank": 5, "team": "DiosSergio F.C", "points": 1235.7}, {"round": 18, "rank": 6, "team": "Alvaro Benito Camela", "points": 1222.5}, {"round": 18, "rank": 7, "team": "Sergio Velayos", "points": 1206.3}, {"round": 18, "rank": 8, "team": "Northon", "points": 1195.0}, {"round": 18, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 19, "rank": 1, "team": "Jesús Diego Cota", "points": 1463.3}, {"round": 19, "rank": 2, "team": "McNostril Team", "points": 1422.1}, {"round": 19, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1334.3}, {"round": 19, "rank": 4, "team": "Los soldados de Rubiales", "points": 1317.7}, {"round": 19, "rank": 5, "team": "DiosSergio F.C", "points": 1312.4}, {"round": 19, "rank": 6, "team": "Alvaro Benito Camela", "points": 1288.4}, {"round": 19, "rank": 7, "team": "Sergio Velayos", "points": 1264.2}, {"round": 19, "rank": 8, "team": "Northon", "points": 1258.2}, {"round": 19, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 20, "rank": 1, "team": "Jesús Diego Cota", "points": 1522.4}, {"round": 20, "rank": 2, "team": "McNostril Team", "points": 1490.9}, {"round": 20, "rank": 3, "team": "Los soldados de Rubiales", "points": 1382.1}, {"round": 20, "rank": 4, "team": "Alvaro Benito Camela", "points": 1377.8}, {"round": 20, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 1377.1}, {"round": 20, "rank": 6, "team": "DiosSergio F.C", "points": 1362.4}, {"round": 20, "rank": 7, "team": "Sergio Velayos", "points": 1344.2}, {"round": 20, "rank": 8, "team": "Northon", "points": 1295.0}, {"round": 20, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 21, "rank": 1, "team": "Jesús Diego Cota", "points": 1597.5}, {"round": 21, "rank": 2, "team": "McNostril Team", "points": 1571.6}, {"round": 21, "rank": 3, "team": "Alvaro Benito Camela", "points": 1467.6}, {"round": 21, "rank": 4, "team": "Los soldados de Rubiales", "points": 1463.4}, {"round": 21, "rank": 5, "team": "Sergio Velayos", "points": 1417.0}, {"round": 21, "rank": 6, "team": "⭐⭐Heraso 🤴🏻", "points": 1416.3}, {"round": 21, "rank": 7, "team": "DiosSergio F.C", "points": 1409.4}, {"round": 21, "rank": 8, "team": "Northon", "points": 1341.4}, {"round": 21, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 22, "rank": 1, "team": "Jesús Diego Cota", "points": 1685.7}, {"round": 22, "rank": 2, "team": "McNostril Team", "points": 1636.7}, {"round": 22, "rank": 3, "team": "Alvaro Benito Camela", "points": 1537.4}, {"round": 22, "rank": 4, "team": "Los soldados de Rubiales", "points": 1530.8}, {"round": 22, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 1498.7}, {"round": 22, "rank": 6, "team": "Sergio Velayos", "points": 1492.8}, {"round": 22, "rank": 7, "team": "DiosSergio F.C", "points": 1466.5}, {"round": 22, "rank": 8, "team": "Northon", "points": 1413.0}, {"round": 22, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 23, "rank": 1, "team": "Jesús Diego Cota", "points": 1763.9}, {"round": 23, "rank": 2, "team": "McNostril Team", "points": 1751.6}, {"round": 23, "rank": 3, "team": "Los soldados de Rubiales", "points": 1605.4}, {"round": 23, "rank": 4, "team": "Alvaro Benito Camela", "points": 1591.5}, {"round": 23, "rank": 5, "team": "⭐⭐Heraso 🤴🏻", "points": 1576.9}, {"round": 23, "rank": 6, "team": "Sergio Velayos", "points": 1575.1}, {"round": 23, "rank": 7, "team": "DiosSergio F.C", "points": 1527.7}, {"round": 23, "rank": 8, "team": "Northon", "points": 1458.5}, {"round": 23, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 24, "rank": 1, "team": "McNostril Team", "points": 1840.0}, {"round": 24, "rank": 2, "team": "Jesús Diego Cota", "points": 1821.3}, {"round": 24, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1671.4}, {"round": 24, "rank": 4, "team": "Los soldados de Rubiales", "points": 1665.6}, {"round": 24, "rank": 5, "team": "Alvaro Benito Camela", "points": 1651.9}, {"round": 24, "rank": 6, "team": "Sergio Velayos", "points": 1649.7}, {"round": 24, "rank": 7, "team": "DiosSergio F.C", "points": 1579.7}, {"round": 24, "rank": 8, "team": "Northon", "points": 1513.6}, {"round": 24, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 25, "rank": 1, "team": "McNostril Team", "points": 1906.5}, {"round": 25, "rank": 2, "team": "Jesús Diego Cota", "points": 1904.3}, {"round": 25, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1768.3}, {"round": 25, "rank": 4, "team": "Los soldados de Rubiales", "points": 1764.8}, {"round": 25, "rank": 5, "team": "Sergio Velayos", "points": 1721.0}, {"round": 25, "rank": 6, "team": "Alvaro Benito Camela", "points": 1710.3}, {"round": 25, "rank": 7, "team": "DiosSergio F.C", "points": 1645.1}, {"round": 25, "rank": 8, "team": "Northon", "points": 1556.3}, {"round": 25, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 26, "rank": 1, "team": "Jesús Diego Cota", "points": 2006.5}, {"round": 26, "rank": 2, "team": "McNostril Team", "points": 1963.9}, {"round": 26, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1849.1}, {"round": 26, "rank": 4, "team": "Los soldados de Rubiales", "points": 1818.1}, {"round": 26, "rank": 5, "team": "Alvaro Benito Camela", "points": 1800.6}, {"round": 26, "rank": 6, "team": "Sergio Velayos", "points": 1797.4}, {"round": 26, "rank": 7, "team": "DiosSergio F.C", "points": 1721.6}, {"round": 26, "rank": 8, "team": "Northon", "points": 1613.1}, {"round": 26, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 27, "rank": 1, "team": "Jesús Diego Cota", "points": 2091.8}, {"round": 27, "rank": 2, "team": "McNostril Team", "points": 2039.5}, {"round": 27, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1907.7}, {"round": 27, "rank": 4, "team": "Los soldados de Rubiales", "points": 1899.5}, {"round": 27, "rank": 5, "team": "Sergio Velayos", "points": 1885.2}, {"round": 27, "rank": 6, "team": "Alvaro Benito Camela", "points": 1844.6}, {"round": 27, "rank": 7, "team": "DiosSergio F.C", "points": 1762.8}, {"round": 27, "rank": 8, "team": "Northon", "points": 1654.2}, {"round": 27, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 28, "rank": 1, "team": "Jesús Diego Cota", "points": 2158.7}, {"round": 28, "rank": 2, "team": "McNostril Team", "points": 2101.2}, {"round": 28, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 1985.6}, {"round": 28, "rank": 4, "team": "Sergio Velayos", "points": 1967.2}, {"round": 28, "rank": 5, "team": "Los soldados de Rubiales", "points": 1950.6}, {"round": 28, "rank": 6, "team": "Alvaro Benito Camela", "points": 1905.4}, {"round": 28, "rank": 7, "team": "DiosSergio F.C", "points": 1827.1}, {"round": 28, "rank": 8, "team": "Northon", "points": 1701.9}, {"round": 28, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 29, "rank": 1, "team": "Jesús Diego Cota", "points": 2234.0}, {"round": 29, "rank": 2, "team": "McNostril Team", "points": 2189.0}, {"round": 29, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 2083.5}, {"round": 29, "rank": 4, "team": "Sergio Velayos", "points": 2054.2}, {"round": 29, "rank": 5, "team": "Los soldados de Rubiales", "points": 2021.3}, {"round": 29, "rank": 6, "team": "Alvaro Benito Camela", "points": 1973.2}, {"round": 29, "rank": 7, "team": "DiosSergio F.C", "points": 1864.7}, {"round": 29, "rank": 8, "team": "Northon", "points": 1765.2}, {"round": 29, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 30, "rank": 1, "team": "Jesús Diego Cota", "points": 2312.7}, {"round": 30, "rank": 2, "team": "McNostril Team", "points": 2279.3}, {"round": 30, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 2141.5}, {"round": 30, "rank": 4, "team": "Sergio Velayos", "points": 2132.5}, {"round": 30, "rank": 5, "team": "Los soldados de Rubiales", "points": 2072.7}, {"round": 30, "rank": 6, "team": "Alvaro Benito Camela", "points": 2037.9}, {"round": 30, "rank": 7, "team": "DiosSergio F.C", "points": 1864.7}, {"round": 30, "rank": 8, "team": "Northon", "points": 1815.9}, {"round": 30, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 31, "rank": 1, "team": "Jesús Diego Cota", "points": 2383.7}, {"round": 31, "rank": 2, "team": "McNostril Team", "points": 2370.9}, {"round": 31, "rank": 3, "team": "Sergio Velayos", "points": 2219.0}, {"round": 31, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2207.4}, {"round": 31, "rank": 5, "team": "Los soldados de Rubiales", "points": 2129.3}, {"round": 31, "rank": 6, "team": "Alvaro Benito Camela", "points": 2113.2}, {"round": 31, "rank": 7, "team": "DiosSergio F.C", "points": 1959.2}, {"round": 31, "rank": 8, "team": "Northon", "points": 1858.8}, {"round": 31, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 32, "rank": 1, "team": "Jesús Diego Cota", "points": 2474.5}, {"round": 32, "rank": 2, "team": "McNostril Team", "points": 2430.1}, {"round": 32, "rank": 3, "team": "Sergio Velayos", "points": 2294.5}, {"round": 32, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2282.0}, {"round": 32, "rank": 5, "team": "Los soldados de Rubiales", "points": 2197.0}, {"round": 32, "rank": 6, "team": "Alvaro Benito Camela", "points": 2140.9}, {"round": 32, "rank": 7, "team": "DiosSergio F.C", "points": 2048.0}, {"round": 32, "rank": 8, "team": "Northon", "points": 1905.7}, {"round": 32, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 33, "rank": 1, "team": "Jesús Diego Cota", "points": 2533.5}, {"round": 33, "rank": 2, "team": "McNostril Team", "points": 2530.1}, {"round": 33, "rank": 3, "team": "⭐⭐Heraso 🤴🏻", "points": 2383.8}, {"round": 33, "rank": 4, "team": "Sergio Velayos", "points": 2369.8}, {"round": 33, "rank": 5, "team": "Los soldados de Rubiales", "points": 2257.9}, {"round": 33, "rank": 6, "team": "Alvaro Benito Camela", "points": 2206.4}, {"round": 33, "rank": 7, "team": "DiosSergio F.C", "points": 2146.5}, {"round": 33, "rank": 8, "team": "Northon", "points": 1967.2}, {"round": 33, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 34, "rank": 1, "team": "McNostril Team", "points": 2615.3}, {"round": 34, "rank": 2, "team": "Jesús Diego Cota", "points": 2608.7}, {"round": 34, "rank": 3, "team": "Sergio Velayos", "points": 2480.9}, {"round": 34, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2477.0}, {"round": 34, "rank": 5, "team": "Los soldados de Rubiales", "points": 2336.0}, {"round": 34, "rank": 6, "team": "Alvaro Benito Camela", "points": 2274.7}, {"round": 34, "rank": 7, "team": "DiosSergio F.C", "points": 2226.0}, {"round": 34, "rank": 8, "team": "Northon", "points": 2019.1}, {"round": 34, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 35, "rank": 1, "team": "Jesús Diego Cota", "points": 2679.0}, {"round": 35, "rank": 2, "team": "McNostril Team", "points": 2675.6}, {"round": 35, "rank": 3, "team": "Sergio Velayos", "points": 2582.6}, {"round": 35, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2538.2}, {"round": 35, "rank": 5, "team": "Los soldados de Rubiales", "points": 2390.5}, {"round": 35, "rank": 6, "team": "Alvaro Benito Camela", "points": 2349.6}, {"round": 35, "rank": 7, "team": "DiosSergio F.C", "points": 2292.5}, {"round": 35, "rank": 8, "team": "Northon", "points": 2088.7}, {"round": 35, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 36, "rank": 1, "team": "Jesús Diego Cota", "points": 2756.0}, {"round": 36, "rank": 2, "team": "McNostril Team", "points": 2751.3}, {"round": 36, "rank": 3, "team": "Sergio Velayos", "points": 2667.6}, {"round": 36, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2609.4}, {"round": 36, "rank": 5, "team": "Los soldados de Rubiales", "points": 2449.4}, {"round": 36, "rank": 6, "team": "Alvaro Benito Camela", "points": 2387.3}, {"round": 36, "rank": 7, "team": "DiosSergio F.C", "points": 2342.9}, {"round": 36, "rank": 8, "team": "Northon", "points": 2135.8}, {"round": 36, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 37, "rank": 1, "team": "Jesús Diego Cota", "points": 2832.8}, {"round": 37, "rank": 2, "team": "McNostril Team", "points": 2824.6}, {"round": 37, "rank": 3, "team": "Sergio Velayos", "points": 2742.7}, {"round": 37, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2719.6}, {"round": 37, "rank": 5, "team": "Los soldados de Rubiales", "points": 2512.3}, {"round": 37, "rank": 6, "team": "Alvaro Benito Camela", "points": 2443.5}, {"round": 37, "rank": 7, "team": "DiosSergio F.C", "points": 2385.2}, {"round": 37, "rank": 8, "team": "Northon", "points": 2191.6}, {"round": 37, "rank": 9, "team": "Al-Karrer", "points": 16.9}, {"round": 38, "rank": 1, "team": "McNostril Team", "points": 2918.6}, {"round": 38, "rank": 2, "team": "Jesús Diego Cota", "points": 2918.0}, {"round": 38, "rank": 3, "team": "Sergio Velayos", "points": 2830.4}, {"round": 38, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 2822.3}, {"round": 38, "rank": 5, "team": "Los soldados de Rubiales", "points": 2598.5}, {"round": 38, "rank": 6, "team": "Alvaro Benito Camela", "points": 2510.8}, {"round": 38, "rank": 7, "team": "DiosSergio F.C", "points": 2441.9}, {"round": 38, "rank": 8, "team": "Northon", "points": 2212.2}, {"round": 38, "rank": 9, "team": "Al-Karrer", "points": 16.9}];
+
+        function changeSeason(select) {
+            const target = select.value;
+            const currentFile = window.location.pathname.split("/").pop();
+            if (target && target !== currentFile) {
+                window.location.assign(new URL(target, window.location.href).href);
+            }
+        }
+        const seasonSelect = document.getElementById("season-select");
+        seasonSelect.addEventListener("change", function () { changeSeason(this); });
+
+        function formatPoints(value) {
+            return Number(value).toFixed(1).replace(".", ",");
+        }
+
+        function renderRoundRanking(round) {
+            const body = document.getElementById("round-ranking-body");
+            if (!body) return;
+            const rows = cumulativeRankings.filter((item) => item.round === Number(round));
+            body.innerHTML = rows.map((item) => `
+                <tr>
+                    <td class="px-4 py-3 text-center tabular-nums">${item.rank}</td>
+                    <td class="px-4 py-3 font-semibold">${item.team}</td>
+                    <td class="px-4 py-3 text-right tabular-nums">${formatPoints(item.points)}</td>
+                </tr>
+            `).join("");
+        }
+
+        const roundRankingSelect = document.getElementById("round-ranking-select");
+        if (roundRankingSelect) {
+            renderRoundRanking(roundRankingSelect.value);
+            roundRankingSelect.addEventListener("change", function () { renderRoundRanking(this.value); });
+        }
+    </script>
+</body>
+</html>

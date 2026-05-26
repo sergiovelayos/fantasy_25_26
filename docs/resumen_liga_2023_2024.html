@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen Liga Futmondo 2023-2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <header class="mb-8">
+            <div class="flex flex-col gap-4 border-b border-slate-300 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · 2023-2024</p>
+                    <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Resumen de liga</h1>
+                    <p class="mt-2 text-sm text-slate-600">Actualizado: 26/05/2026 22:43</p>
+                </div>
+                <div class="flex flex-col gap-3 sm:items-end">
+                    <label class="text-xs font-bold uppercase text-slate-500" for="season-select">Temporada</label>
+                    <select id="season-select" class="border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-900" onchange="changeSeason(this)" oninput="changeSeason(this)">
+                        <option value="resumen_liga_2023_2024.html" selected>2023-2024</option>
+<option value="resumen_liga_2024_2025.html">2024-2025</option>
+<option value="resumen_liga_2025_2026.html">2025-2026</option>
+                    </select>
+                    <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index.html">Mercado</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Jornadas</p>
+                <p class="mt-2 text-3xl font-extrabold">0</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Equipos en liga</p>
+                <p class="mt-2 text-3xl font-extrabold">13</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Fichajes con comprador</p>
+                <p class="mt-2 text-3xl font-extrabold">1.099</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Gasto total</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">51.162 M€</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Ventas</p>
+                <p class="mt-2 text-3xl font-extrabold">1.082</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase text-slate-500">Ingresos por ventas</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">47.027 M€</p>
+            </div>
+        </section>
+
+        
+        <section class="mt-8 border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950">
+            No hay histórico de clasificación por jornadas para esta temporada. Se muestran solo las métricas de mercado: fichajes, ventas, ingresos y balance.
+        </section>
+        
+        
+        
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Resumen de mercado</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Neto</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+        <tr>
+            <td class="px-4 py-3 font-semibold">Jesús Diego Cota</td>
+            <td class="px-4 py-3 text-center tabular-nums">131</td>
+            <td class="px-4 py-3 text-right tabular-nums">7.618.339.611 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">128</td>
+            <td class="px-4 py-3 text-right tabular-nums">6.617.014.964 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">1.001.324.647 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">DiosSergio F.C</td>
+            <td class="px-4 py-3 text-center tabular-nums">101</td>
+            <td class="px-4 py-3 text-right tabular-nums">6.074.681.147 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">98</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.592.135.901 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">482.545.246 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">McNostril Team</td>
+            <td class="px-4 py-3 text-center tabular-nums">189</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.767.469.075 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">189</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.125.321.424 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">642.147.651 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Los soldados de Rubiales</td>
+            <td class="px-4 py-3 text-center tabular-nums">155</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.711.586.710 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">155</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.452.973.378 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">258.613.332 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Kwik-E-Mart</td>
+            <td class="px-4 py-3 text-center tabular-nums">121</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.550.509.548 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">123</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.362.265.907 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">188.243.641 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Alvaro Benito Camela</td>
+            <td class="px-4 py-3 text-center tabular-nums">91</td>
+            <td class="px-4 py-3 text-right tabular-nums">5.031.045.282 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">93</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.626.687.686 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">404.357.596 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Sergio Velayos</td>
+            <td class="px-4 py-3 text-center tabular-nums">121</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.374.472.357 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">117</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.708.148.301 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-333.675.944 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Filósofo sidas</td>
+            <td class="px-4 py-3 text-center tabular-nums">60</td>
+            <td class="px-4 py-3 text-right tabular-nums">4.242.172.843 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">54</td>
+            <td class="px-4 py-3 text-right tabular-nums">3.414.179.345 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">827.993.498 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Al-Karrer</td>
+            <td class="px-4 py-3 text-center tabular-nums">41</td>
+            <td class="px-4 py-3 text-right tabular-nums">3.852.915.524 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">42</td>
+            <td class="px-4 py-3 text-right tabular-nums">3.948.442.226 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-95.526.702 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Northon</td>
+            <td class="px-4 py-3 text-center tabular-nums">56</td>
+            <td class="px-4 py-3 text-right tabular-nums">2.007.846.606 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">58</td>
+            <td class="px-4 py-3 text-right tabular-nums">1.987.784.266 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">20.062.340 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">rubenarauzo</td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3 text-right tabular-nums">340.000.000 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3 text-right tabular-nums">55.763.372 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">284.236.628 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Shurmano</td>
+            <td class="px-4 py-3 text-center tabular-nums">15</td>
+            <td class="px-4 py-3 text-right tabular-nums">339.980.364 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">11</td>
+            <td class="px-4 py-3 text-right tabular-nums">44.844.865 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">295.135.499 €</td>
+        </tr>
+        
+
+        <tr>
+            <td class="px-4 py-3 font-semibold">Heraso</td>
+            <td class="px-4 py-3 text-center tabular-nums">13</td>
+            <td class="px-4 py-3 text-right tabular-nums">251.344.242 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">9</td>
+            <td class="px-4 py-3 text-right tabular-nums">91.661.706 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">159.682.536 €</td>
+        </tr>
+        </tbody>
+                </table>
+            </div>
+        </section>
+        
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Mercado de fichajes por equipo</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-right">Precio medio</th><th class="px-4 py-3 text-right">Fichaje más caro</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-center tabular-nums">131</td><td class="px-4 py-3 text-right tabular-nums">7.618.339.611 €</td><td class="px-4 py-3 text-right tabular-nums">58.155.264 €</td><td class="px-4 py-3 text-right tabular-nums">464.899.515 €</td></tr>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">101</td><td class="px-4 py-3 text-right tabular-nums">6.074.681.147 €</td><td class="px-4 py-3 text-right tabular-nums">60.145.358 €</td><td class="px-4 py-3 text-right tabular-nums">469.757.229 €</td></tr>
+<tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">189</td><td class="px-4 py-3 text-right tabular-nums">5.767.469.075 €</td><td class="px-4 py-3 text-right tabular-nums">30.515.709 €</td><td class="px-4 py-3 text-right tabular-nums">259.406.954 €</td></tr>
+<tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">155</td><td class="px-4 py-3 text-right tabular-nums">5.711.586.710 €</td><td class="px-4 py-3 text-right tabular-nums">36.848.947 €</td><td class="px-4 py-3 text-right tabular-nums">392.594.186 €</td></tr>
+<tr><td class="px-4 py-3">Kwik-E-Mart</td><td class="px-4 py-3 text-center tabular-nums">121</td><td class="px-4 py-3 text-right tabular-nums">5.550.509.548 €</td><td class="px-4 py-3 text-right tabular-nums">45.871.980 €</td><td class="px-4 py-3 text-right tabular-nums">408.054.980 €</td></tr>
+<tr><td class="px-4 py-3">Alvaro Benito Camela</td><td class="px-4 py-3 text-center tabular-nums">91</td><td class="px-4 py-3 text-right tabular-nums">5.031.045.282 €</td><td class="px-4 py-3 text-right tabular-nums">55.286.212 €</td><td class="px-4 py-3 text-right tabular-nums">493.091.380 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">121</td><td class="px-4 py-3 text-right tabular-nums">4.374.472.357 €</td><td class="px-4 py-3 text-right tabular-nums">36.152.664 €</td><td class="px-4 py-3 text-right tabular-nums">370.746.796 €</td></tr>
+<tr><td class="px-4 py-3">Filósofo sidas</td><td class="px-4 py-3 text-center tabular-nums">60</td><td class="px-4 py-3 text-right tabular-nums">4.242.172.843 €</td><td class="px-4 py-3 text-right tabular-nums">70.702.881 €</td><td class="px-4 py-3 text-right tabular-nums">537.439.691 €</td></tr>
+<tr><td class="px-4 py-3">Al-Karrer</td><td class="px-4 py-3 text-center tabular-nums">41</td><td class="px-4 py-3 text-right tabular-nums">3.852.915.524 €</td><td class="px-4 py-3 text-right tabular-nums">93.973.549 €</td><td class="px-4 py-3 text-right tabular-nums">511.109.563 €</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">56</td><td class="px-4 py-3 text-right tabular-nums">2.007.846.606 €</td><td class="px-4 py-3 text-right tabular-nums">35.854.404 €</td><td class="px-4 py-3 text-right tabular-nums">484.840.620 €</td></tr>
+<tr><td class="px-4 py-3">rubenarauzo</td><td class="px-4 py-3 text-center tabular-nums">5</td><td class="px-4 py-3 text-right tabular-nums">340.000.000 €</td><td class="px-4 py-3 text-right tabular-nums">68.000.000 €</td><td class="px-4 py-3 text-right tabular-nums">180.000.000 €</td></tr>
+<tr><td class="px-4 py-3">Shurmano</td><td class="px-4 py-3 text-center tabular-nums">15</td><td class="px-4 py-3 text-right tabular-nums">339.980.364 €</td><td class="px-4 py-3 text-right tabular-nums">22.665.358 €</td><td class="px-4 py-3 text-right tabular-nums">52.052.000 €</td></tr>
+<tr><td class="px-4 py-3">Heraso</td><td class="px-4 py-3 text-center tabular-nums">13</td><td class="px-4 py-3 text-right tabular-nums">251.344.242 €</td><td class="px-4 py-3 text-right tabular-nums">19.334.172 €</td><td class="px-4 py-3 text-right tabular-nums">59.137.555 €</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Ventas por equipo</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Venta media</th><th class="px-4 py-3 text-right">Venta más cara</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">189</td><td class="px-4 py-3 text-right tabular-nums">5.125.321.424 €</td><td class="px-4 py-3 text-right tabular-nums">27.118.103 €</td><td class="px-4 py-3 text-right tabular-nums">340.288.085 €</td></tr>
+<tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">155</td><td class="px-4 py-3 text-right tabular-nums">5.452.973.378 €</td><td class="px-4 py-3 text-right tabular-nums">35.180.473 €</td><td class="px-4 py-3 text-right tabular-nums">511.109.563 €</td></tr>
+<tr><td class="px-4 py-3">Jesús Diego Cota</td><td class="px-4 py-3 text-center tabular-nums">128</td><td class="px-4 py-3 text-right tabular-nums">6.617.014.964 €</td><td class="px-4 py-3 text-right tabular-nums">51.695.429 €</td><td class="px-4 py-3 text-right tabular-nums">469.757.229 €</td></tr>
+<tr><td class="px-4 py-3">Kwik-E-Mart</td><td class="px-4 py-3 text-center tabular-nums">123</td><td class="px-4 py-3 text-right tabular-nums">5.362.265.907 €</td><td class="px-4 py-3 text-right tabular-nums">43.595.658 €</td><td class="px-4 py-3 text-right tabular-nums">337.204.105 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">117</td><td class="px-4 py-3 text-right tabular-nums">4.708.148.301 €</td><td class="px-4 py-3 text-right tabular-nums">40.240.584 €</td><td class="px-4 py-3 text-right tabular-nums">484.840.620 €</td></tr>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">98</td><td class="px-4 py-3 text-right tabular-nums">5.592.135.901 €</td><td class="px-4 py-3 text-right tabular-nums">57.062.611 €</td><td class="px-4 py-3 text-right tabular-nums">414.543.897 €</td></tr>
+<tr><td class="px-4 py-3">Alvaro Benito Camela</td><td class="px-4 py-3 text-center tabular-nums">93</td><td class="px-4 py-3 text-right tabular-nums">4.626.687.686 €</td><td class="px-4 py-3 text-right tabular-nums">49.749.330 €</td><td class="px-4 py-3 text-right tabular-nums">377.603.035 €</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">58</td><td class="px-4 py-3 text-right tabular-nums">1.987.784.266 €</td><td class="px-4 py-3 text-right tabular-nums">34.272.143 €</td><td class="px-4 py-3 text-right tabular-nums">260.051.732 €</td></tr>
+<tr><td class="px-4 py-3">Filósofo sidas</td><td class="px-4 py-3 text-center tabular-nums">54</td><td class="px-4 py-3 text-right tabular-nums">3.414.179.345 €</td><td class="px-4 py-3 text-right tabular-nums">63.225.543 €</td><td class="px-4 py-3 text-right tabular-nums">493.091.380 €</td></tr>
+<tr><td class="px-4 py-3">Al-Karrer</td><td class="px-4 py-3 text-center tabular-nums">42</td><td class="px-4 py-3 text-right tabular-nums">3.948.442.226 €</td><td class="px-4 py-3 text-right tabular-nums">94.010.529 €</td><td class="px-4 py-3 text-right tabular-nums">537.439.691 €</td></tr>
+<tr><td class="px-4 py-3">Shurmano</td><td class="px-4 py-3 text-center tabular-nums">11</td><td class="px-4 py-3 text-right tabular-nums">44.844.865 €</td><td class="px-4 py-3 text-right tabular-nums">4.076.806 €</td><td class="px-4 py-3 text-right tabular-nums">13.351.485 €</td></tr>
+<tr><td class="px-4 py-3">Heraso</td><td class="px-4 py-3 text-center tabular-nums">9</td><td class="px-4 py-3 text-right tabular-nums">91.661.706 €</td><td class="px-4 py-3 text-right tabular-nums">10.184.634 €</td><td class="px-4 py-3 text-right tabular-nums">34.649.987 €</td></tr>
+<tr><td class="px-4 py-3">rubenarauzo</td><td class="px-4 py-3 text-center tabular-nums">5</td><td class="px-4 py-3 text-right tabular-nums">55.763.372 €</td><td class="px-4 py-3 text-right tabular-nums">11.152.674 €</td><td class="px-4 py-3 text-right tabular-nums">34.301.983 €</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        
+    </main>
+    <script>
+        const cumulativeRankings = [];
+
+        function changeSeason(select) {
+            const target = select.value;
+            const currentFile = window.location.pathname.split("/").pop();
+            if (target && target !== currentFile) {
+                window.location.assign(new URL(target, window.location.href).href);
+            }
+        }
+        const seasonSelect = document.getElementById("season-select");
+        seasonSelect.addEventListener("change", function () { changeSeason(this); });
+
+        function formatPoints(value) {
+            return Number(value).toFixed(1).replace(".", ",");
+        }
+
+        function renderRoundRanking(round) {
+            const body = document.getElementById("round-ranking-body");
+            if (!body) return;
+            const rows = cumulativeRankings.filter((item) => item.round === Number(round));
+            body.innerHTML = rows.map((item) => `
+                <tr>
+                    <td class="px-4 py-3 text-center tabular-nums">${item.rank}</td>
+                    <td class="px-4 py-3 font-semibold">${item.team}</td>
+                    <td class="px-4 py-3 text-right tabular-nums">${formatPoints(item.points)}</td>
+                </tr>
+            `).join("");
+        }
+
+        const roundRankingSelect = document.getElementById("round-ranking-select");
+        if (roundRankingSelect) {
+            renderRoundRanking(roundRankingSelect.value);
+            roundRankingSelect.addEventListener("change", function () { renderRoundRanking(this.value); });
+        }
+    </script>
+</body>
+</html>
