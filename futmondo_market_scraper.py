@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
+import argparse
 import json
+import os
+from datetime import datetime
+from pathlib import Path
+
 import requests
 from bs4 import BeautifulSoup  # por si lo necesitas en el futuro
 from dotenv import load_dotenv
-from datetime import datetime
 
 # --- CONFIGURACIÓN ---
 load_dotenv()
@@ -17,12 +20,28 @@ USERTEAMID = os.getenv("FUTMONDO_USERTEAMID")
 API_URL = "https://api.futmondo.com/1/market/players"
 LOGIN_API_URL = "https://api.futmondo.com/5/login/with_mail"
 FILE_PATH = "data/futmondo_market.json"
+DEFAULT_EXPORTS_DIR = Path("data/exports")
 
 
-def futmondo_market_scraper_api():
+def resolve_output_path(season=None, output=None, legacy=False):
+    if output:
+        return Path(output)
+    if legacy or not season:
+        return Path(FILE_PATH)
+    return DEFAULT_EXPORTS_DIR / season / "market_snapshots.json"
+
+
+def futmondo_market_scraper_api(season=None, output=None, legacy=False):
     if not all([USERNAME, PASSWORD]):
         print("Error: faltan variables de entorno FUTMONDO_USER y FUTMONDO_PASS.")
         return
+
+    if not all([CHAMPIONSHIPID, USERTEAMID]):
+        print("Error: faltan variables de entorno FUTMONDO_CHAMPIONSHIPID y FUTMONDO_USERTEAMID.")
+        return
+
+    output_path = resolve_output_path(season=season, output=output, legacy=legacy)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with requests.Session() as session:
         try:
@@ -73,8 +92,8 @@ def futmondo_market_scraper_api():
 
             # --- GUARDAR EN JSON ---
             # Cargar datos previos
-            if os.path.exists(FILE_PATH):
-                with open(FILE_PATH, "r", encoding="utf-8") as f:
+            if output_path.exists():
+                with output_path.open("r", encoding="utf-8") as f:
                     try:
                         existing_data = json.load(f)
                     except json.JSONDecodeError:
@@ -89,19 +108,28 @@ def futmondo_market_scraper_api():
             # Añadir nueva ejecución con fecha
             new_entry = {
                 "fecha": ahora,
+                "season": season,
+                "championshipId": CHAMPIONSHIPID,
+                "userteamId": USERTEAMID,
                 "jugadores": players_list
             }
             existing_data.append(new_entry)
 
             # Guardar todo de nuevo
-            with open(FILE_PATH, "w", encoding="utf-8") as f:
+            with output_path.open("w", encoding="utf-8") as f:
                 json.dump(existing_data, f, ensure_ascii=False, indent=2)
 
-            print(f"Datos añadidos correctamente a '{FILE_PATH}'.")
+            print(f"Jugadores de mercado descargados: {len(players_list)}")
+            print(f"Datos añadidos correctamente a '{output_path}'.")
 
         except Exception as e:
             print(f"Ocurrió un error: {e}")
 
 
 if __name__ == "__main__":
-    futmondo_market_scraper_api()
+    parser = argparse.ArgumentParser(description="Extrae el mercado actual de Futmondo.")
+    parser.add_argument("--season", help="Temporada de salida, por ejemplo 2026_2027.")
+    parser.add_argument("--output", help="Ruta JSON de salida. Si se omite con --season usa data/exports/<temporada>/market_snapshots.json.")
+    parser.add_argument("--legacy", action="store_true", help=f"Guardar en la ruta historica {FILE_PATH}.")
+    args = parser.parse_args()
+    futmondo_market_scraper_api(season=args.season, output=args.output, legacy=args.legacy)

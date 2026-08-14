@@ -60,9 +60,11 @@ El script `run_futmondo.sh` encadena:
 ## 💻 Uso de los Scripts
 
 *   **Extraer datos del mercado:**
-    `python futmondo_market_scraper.py`
+    `python futmondo_market_scraper.py --season 2026_2027`
+    - Guarda los snapshots en `data/exports/<temporada>/market_snapshots.json`.
+    - Para seguir usando el fichero histórico global: `python futmondo_market_scraper.py --legacy`.
 *   **Exportar todos los fichajes de prensa por temporada:**
-    `python export_pressroom.py --season 2025_2026`
+    `python export_pressroom.py --season 2026_2027`
     - Si no se indica `--season`, el script intenta inferir la temporada a partir de las fechas descargadas.
     - Guarda el JSON completo y un CSV limpio en `data/exports/<temporada>/`.
 *   **Importar un pressroom histórico ya descargado:**
