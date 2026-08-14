@@ -674,7 +674,10 @@ def render_dashboard(summary, season, seasons=None):
                     <select id="season-select" class="border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-900" onchange="changeSeason(this)" oninput="changeSeason(this)">
                         {selector_options}
                     </select>
-                    <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index.html">Mercado</a>
+                    <nav class="flex gap-2">
+                        <a class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white" href="resumen_liga_{season}.html">Resumen</a>
+                        <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
+                    </nav>
                 </div>
             </div>
         </header>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Futmondo 2024-2025</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <header class="mb-8">
+            <div class="flex flex-col gap-4 border-b border-gray-300 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-indigo-700">Futmondo PALETOS · 2024-2025</p>
+                    <h1 class="mt-2 text-3xl font-extrabold text-gray-950 sm:text-4xl">Mercado</h1>
+                    <p class="mt-2 text-sm text-gray-600">Actualizado: 14/08/2026 23:19</p>
+                </div>
+                <div class="flex flex-col gap-3 sm:items-end">
+                    <label class="text-xs font-bold uppercase text-gray-500" for="season-select">Temporada</label>
+                    <select id="season-select" class="border border-gray-400 bg-white px-3 py-2 text-sm font-semibold text-gray-900" onchange="changeSeason(this)" oninput="changeSeason(this)">
+                        <option value="index_2023_2024.html">2023-2024</option>
+<option value="index_2024_2025.html" selected>2024-2025</option>
+<option value="index_2025_2026.html">2025-2026</option>
+<option value="index_2026_2027.html">2026-2027</option>
+                    </select>
+                    <nav class="flex gap-2">
+                        <a class="inline-flex items-center justify-center bg-indigo-700 px-4 py-2 text-sm font-semibold text-white" href="index_2024_2025.html">Mercado</a>
+                        <a class="inline-flex items-center justify-center border border-gray-400 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-white" href="resumen_liga_2024_2025.html">Resumen</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="bg-white p-5 shadow-sm border-l-4 border-indigo-500">
+                <p class="text-xs font-bold uppercase text-gray-500">Tasa de Conversión</p>
+                <p class="mt-2 text-3xl font-extrabold">0.00%</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm border-l-4 border-blue-500">
+                <p class="text-xs font-bold uppercase text-gray-500">Ofertas Analizadas</p>
+                <p class="mt-2 text-3xl font-extrabold">0</p>
+            </div>
+            <div class="bg-white p-5 shadow-sm border-l-4 border-green-500">
+                <p class="text-xs font-bold uppercase text-gray-500">Fichajes Totales</p>
+                <p class="mt-2 text-3xl font-extrabold">1.060</p>
+            </div>
+        </section>
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
+            <div class="mt-4 flex justify-center">
+                <img src="assets/conversion_chart_2024_2025.png" alt="Gráfico de conversión" class="max-w-full">
+            </div>
+        </section>
+
+        <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold text-indigo-700">Comportamiento de los Compradores</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
+                            <tr><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-center">Fichajes</th><th class="py-3 px-4 text-right">Sobrepuja Media</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="3">Sin cruces suficientes entre mercado y fichajes.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold text-indigo-700">Top 10 Fichajes Más Caros</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
+                            <tr><th class="py-3 px-4">Jugador</th><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-right">Precio</th><th class="py-3 px-4 text-right">Fecha</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+            <tr>
+                <td class="py-3 px-4 font-medium">Mbappé</td>
+                <td class="py-3 px-4">McNostril Team</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">561.513.143 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-03-28</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Lamine Yamal</td>
+                <td class="py-3 px-4">Los soldados de Rubiales</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">459.589.736 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-04-01</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Raphinha</td>
+                <td class="py-3 px-4">Los soldados de Rubiales</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">437.165.433 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-04-18</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Mbappé</td>
+                <td class="py-3 px-4">Jesús Diego Cota</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">434.654.263 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-03-06</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Ayoze Pérez</td>
+                <td class="py-3 px-4">Alvaro Benito Camela</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">417.462.369 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-05-22</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Vinícius</td>
+                <td class="py-3 px-4">Jesús Diego Cota</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">378.311.630 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-03-31</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Lamine Yamal</td>
+                <td class="py-3 px-4">Sergio Velayos</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">349.798.320 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-02-27</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Bellingham</td>
+                <td class="py-3 px-4">McNostril Team</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">347.938.844 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-04-29</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Isco</td>
+                <td class="py-3 px-4">Jesús Diego Cota</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">333.132.995 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-04-30</td>
+            </tr>
+            
+            <tr>
+                <td class="py-3 px-4 font-medium">Raphinha</td>
+                <td class="py-3 px-4">DiosSergio F.C</td>
+                <td class="py-3 px-4 text-right whitespace-nowrap tabular-nums">331.241.185 €</td>
+                <td class="py-3 px-4 text-right text-sm text-gray-500 whitespace-nowrap">2025-02-27</td>
+            </tr>
+            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Mercado Actual (0 jugadores)</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
+                        <tr><th class="py-2 px-3">Jugador</th><th class="py-2 px-3">Equipo</th><th class="py-2 px-3">Precio</th><th class="py-2 px-3 text-center">Media</th><th class="py-2 px-3 text-center">Puntos</th><th class="py-2 px-3">Expira</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="6">Sin jugadores de mercado para esta temporada.</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script>
+        function changeSeason(select) {
+            const target = select.value;
+            const currentFile = window.location.pathname.split("/").pop();
+            if (target && target !== currentFile) {
+                window.location.assign(new URL(target, window.location.href).href);
+            }
+        }
+        document.getElementById("season-select").addEventListener("change", function () { changeSeason(this); });
+    </script>
+</body>
+</html>
