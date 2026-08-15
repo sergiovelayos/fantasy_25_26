@@ -6,7 +6,7 @@ import os
 import re
 import time
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from difflib import SequenceMatcher
 from pathlib import Path
 
@@ -102,6 +102,33 @@ def fetch_html(url):
     return response.text
 
 
+def parse_local_datetime(value):
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+        try:
+            return datetime.strptime(value[:19], fmt)
+        except ValueError:
+            continue
+    return None
+
+
+def filter_delayed_matches(matches, max_days_from_start):
+    if max_days_from_start is None:
+        return matches
+    dated = [(match, parse_local_datetime(match.get("start"))) for match in matches]
+    starts = [start for _, start in dated if start]
+    if not starts:
+        return matches
+    first_start = min(starts)
+    cutoff = first_start + timedelta(days=max_days_from_start)
+    filtered = [match for match, start in dated if not start or start <= cutoff]
+    excluded = [match for match, start in dated if start and start > cutoff]
+    for match in excluded:
+        print(f"Partido retrasado excluido: {match.get('name')} ({match.get('start')})")
+    return filtered
+
+
 def parse_matches(round_number):
     url = lineup_url(round_number)
     soup = BeautifulSoup(fetch_html(url), "html.parser")
@@ -130,6 +157,23 @@ def parse_matches(round_number):
             matches.append(current)
             current = {}
     return matches
+
+
+def load_schedule(path):
+    if not path:
+        return []
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def schedule_action(schedule, today):
+    for entry in schedule:
+        starts_on = date.fromisoformat(entry["starts_on"])
+        active_until = date.fromisoformat(entry.get("active_until", entry["starts_on"]))
+        if today == starts_on:
+            return "run", int(entry["round"])
+        if starts_on < today <= active_until:
+            return "active", int(entry["round"])
+    return "suspend", None
 
 
 def player_probability(node):
@@ -213,8 +257,8 @@ def parse_match_lineups(match):
     return rows
 
 
-def fetch_futbolfantasy_round(round_number, delay=0.2):
-    matches = parse_matches(round_number)
+def fetch_futbolfantasy_round(round_number, delay=0.2, max_days_from_start=4):
+    matches = filter_delayed_matches(parse_matches(round_number), max_days_from_start)
     rows = []
     for index, match in enumerate(matches, start=1):
         print(f"FutbolFantasy partido {index}/{len(matches)}: {match.get('name') or match.get('match')}")
@@ -368,7 +412,7 @@ def render_html(rows, season, round_number, output_path):
                     <td class="px-3 py-2 text-right tabular-nums">{probability}</td>
                     <td class="px-3 py-2 font-semibold">{esc(row['recommendation'])}</td>
                 </tr>
-                """
+                """.strip()
             )
         sections.append(
             f"""
@@ -415,11 +459,43 @@ def render_html(rows, season, round_number, output_path):
                 <nav class="flex gap-2">
                     <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
                     <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="resumen_liga_{season}.html">Resumen</a>
-                    <a class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white" href="asistente_alineacion_{season}_j{round_number}.html">Asistente</a>
+                    <a class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white" href="asistente_alineacion.html">Asistente</a>
                 </nav>
             </div>
         </header>
         {''.join(sections)}
+    </main>
+</body>
+</html>
+"""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(html_content, encoding="utf-8")
+
+
+def render_suspended_html(season, output_path, message):
+    updated = datetime.now().strftime("%d/%m/%Y %H:%M")
+    season_label = season.replace("_", "-")
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Alineación Futmondo {season}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-900">
+    <main class="max-w-4xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <header class="border-b border-slate-300 pb-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · {esc(season_label)}</p>
+            <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Asistente en suspenso</h1>
+            <p class="mt-2 text-sm text-slate-600">Actualizado: {updated}</p>
+            <p class="mt-4 text-slate-700">{esc(message)}</p>
+            <nav class="mt-6 flex gap-2">
+                <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
+                <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="resumen_liga_{season}.html">Resumen</a>
+            </nav>
+        </header>
     </main>
 </body>
 </html>
@@ -435,7 +511,30 @@ def main():
     parser.add_argument("--exports-dir", default=DEFAULT_EXPORTS_DIR, type=Path)
     parser.add_argument("--docs-dir", default=DEFAULT_DOCS_DIR, type=Path)
     parser.add_argument("--delay", default=0.2, type=float)
+    parser.add_argument("--schedule", type=Path)
+    parser.add_argument("--today")
+    parser.add_argument("--skip-if-not-scheduled", action="store_true")
+    parser.add_argument("--suspend-if-not-scheduled", action="store_true")
+    parser.add_argument("--max-days-from-start", default=4, type=int)
     args = parser.parse_args()
+
+    today = date.fromisoformat(args.today) if args.today else date.today()
+    if args.schedule:
+        action, scheduled_round = schedule_action(load_schedule(args.schedule), today)
+        if action == "run":
+            args.round_number = scheduled_round
+        elif args.skip_if_not_scheduled:
+            if action == "active":
+                print(f"Asistente activo para jornada {scheduled_round}; no se actualiza hoy ({today}).")
+            else:
+                print(f"No hay jornada programada para actualizar el asistente hoy ({today}).")
+                if args.suspend_if_not_scheduled:
+                    render_suspended_html(
+                        args.season,
+                        args.docs_dir / "asistente_alineacion.html",
+                        "Se activara de nuevo el dia que empiece la siguiente jornada programada.",
+                    )
+            return
 
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     export_dir = args.exports_dir / args.season / "lineup_assistant"
@@ -445,21 +544,28 @@ def main():
     championship_path = export_dir / f"championshipplayers_{stamp}.json"
     championship_path.write_text(json.dumps(championship_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    matches, ff_rows = fetch_futbolfantasy_round(args.round_number, delay=args.delay)
+    matches, ff_rows = fetch_futbolfantasy_round(
+        args.round_number,
+        delay=args.delay,
+        max_days_from_start=args.max_days_from_start,
+    )
     ff_path = export_dir / f"futbolfantasy_jornada_{args.round_number}_{stamp}.json"
     ff_path.write_text(json.dumps({"matches": matches, "players": ff_rows}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     assessment = build_assessment(championship_data, ff_rows)
     csv_path = export_dir / f"alineacion_asistente_jornada_{args.round_number}_{stamp}.csv"
     html_path = args.docs_dir / f"asistente_alineacion_{args.season}_j{args.round_number}.html"
+    stable_html_path = args.docs_dir / "asistente_alineacion.html"
     write_csv(csv_path, assessment)
     render_html(assessment, args.season, args.round_number, html_path)
+    render_html(assessment, args.season, args.round_number, stable_html_path)
 
     print(f"Jugadores evaluados: {len(assessment)}")
     print(f"Futmondo JSON: {championship_path}")
     print(f"FutbolFantasy JSON: {ff_path}")
     print(f"CSV: {csv_path}")
     print(f"HTML: {html_path}")
+    print(f"HTML estable: {stable_html_path}")
 
 
 if __name__ == "__main__":

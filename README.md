@@ -87,6 +87,7 @@ El script `run_futmondo.sh` encadena:
 *   **Generar el asistente de alineación por jornada:**
     `python evaluate_lineup_assistant.py --season 2026_2027 --round 1`
     - Cruza las plantillas de todos los equipos de Futmondo con las alineaciones probables de FutbolFantasy.
+    - En el cron se usa la agenda `config/lineup_round_schedule_2026_2027.json` y publica siempre el enlace estable `docs/asistente_alineacion.html`.
 *   **Pipeline completo:**
     `./run_futmondo.sh`
 

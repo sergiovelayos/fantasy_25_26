@@ -403,7 +403,7 @@ def render_nav_links(season, active):
         ("Resumen", f"resumen_liga_{season}.html", active == "summary"),
         ("Mercado", f"index_{season}.html", active == "market"),
     ]
-    assistant_path = DEFAULT_OUTPUT.parent / f"asistente_alineacion_{season}_j1.html"
+    assistant_path = DEFAULT_OUTPUT.parent / "asistente_alineacion.html"
     if assistant_path.exists():
         links.append(("Asistente", assistant_path.name, active == "assistant"))
 
