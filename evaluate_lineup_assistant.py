@@ -194,6 +194,14 @@ def player_probability(node):
     return int(match.group(1)) if match else None
 
 
+def player_role(node):
+    classes = set(node.get("class") or [])
+    for role in ["portero", "defensa", "centrocampista", "delantero"]:
+        if role in classes:
+            return role
+    return ""
+
+
 def extract_players_from(container, match, side, lineup_status):
     if not container:
         return []
@@ -217,6 +225,7 @@ def extract_players_from(container, match, side, lineup_status):
                 "match_url": match.get("url"),
                 "lineup_status": lineup_status,
                 "probability": player_probability(node),
+                "role": player_role(node),
                 "availability": "",
             }
         )
@@ -252,6 +261,7 @@ def extract_absences(soup, match, side, availability):
                     "match_url": match.get("url"),
                     "lineup_status": "baja",
                     "probability": 0,
+                    "role": "",
                     "availability": availability,
                 }
             )
@@ -269,15 +279,44 @@ def parse_match_lineups(match):
     return rows
 
 
-def fetch_futbolfantasy_round(round_number, delay=0.2, max_days_from_start=4):
-    matches = filter_delayed_matches(parse_matches(round_number), max_days_from_start)
-    rows = []
-    for index, match in enumerate(matches, start=1):
-        print(f"FutbolFantasy partido {index}/{len(matches)}: {match.get('name') or match.get('match')}")
-        rows.extend(parse_match_lineups(match))
+def fetch_futbolfantasy_round(round_number, delay=0.2, max_days_from_start=4, return_all_rows=False):
+    all_matches = parse_matches(round_number)
+    all_rows = []
+    for index, match in enumerate(all_matches, start=1):
+        print(f"FutbolFantasy partido {index}/{len(all_matches)}: {match.get('name') or match.get('match')}")
+        all_rows.extend(parse_match_lineups(match))
         if delay:
             time.sleep(delay)
+
+    matches = filter_delayed_matches(all_matches, max_days_from_start)
+    included_urls = {match.get("url") for match in matches}
+    rows = [row for row in all_rows if row.get("match_url") in included_urls]
+    if return_all_rows:
+        return matches, rows, all_rows
     return matches, rows
+
+
+def build_team_id_map(championship_data, ff_rows):
+    ff_by_name = {}
+    for row in ff_rows:
+        ff_by_name.setdefault(row["ff_name_norm"], row)
+
+    team_votes = {}
+    for player in championship_data.get("answer", {}).get("players", []):
+        team_id = player.get("teamId")
+        if not team_id:
+            continue
+        ff_row = ff_by_name.get(normalize_name(player.get("name")))
+        if not ff_row or not ff_row.get("club"):
+            continue
+        team_votes.setdefault(team_id, {})
+        club = ff_row["club"]
+        team_votes[team_id][club] = team_votes[team_id].get(club, 0) + 1
+
+    team_map = {}
+    for team_id, votes in team_votes.items():
+        team_map[team_id] = sorted(votes.items(), key=lambda item: item[1], reverse=True)[0][0]
+    return team_map
 
 
 def best_ff_match(player, ff_by_name, ff_rows, overrides=None):
@@ -342,7 +381,8 @@ def recommendation_score(row):
     return score
 
 
-def build_assessment(championship_data, ff_rows, overrides=None):
+def build_assessment(championship_data, ff_rows, overrides=None, team_id_map=None):
+    team_id_map = team_id_map or {}
     ff_by_name = {}
     for row in sorted(ff_rows, key=lambda item: item.get("probability") or 0, reverse=True):
         ff_by_name.setdefault(row["ff_name_norm"], row)
@@ -356,6 +396,8 @@ def build_assessment(championship_data, ff_rows, overrides=None):
             "fantasy_team": player.get("userteam"),
             "player_name": player.get("name"),
             "role": player.get("role"),
+            "futmondo_team_id": player.get("teamId"),
+            "futmondo_club": player.get("team") or team_id_map.get(player.get("teamId"), ""),
             "futmondo_status": player.get("status"),
             "value": player.get("value"),
             "points": player.get("points"),
@@ -525,11 +567,24 @@ def render_suspended_html(season, output_path, message):
     output_path.write_text(html_content, encoding="utf-8")
 
 
-def candidate_matches(player_name, ff_rows, limit=8):
+def role_score(futmondo_role, ff_role):
+    if not futmondo_role or not ff_role:
+        return 0
+    return 0.15 if normalize_name(futmondo_role) == normalize_name(ff_role) else -0.15
+
+
+def club_score(futmondo_club, ff_club):
+    if not futmondo_club or not ff_club:
+        return 0
+    return 0.3 if normalize_name(futmondo_club) == normalize_name(ff_club) else -0.2
+
+
+def candidate_matches(player_name, ff_rows, futmondo_club="", futmondo_role="", limit=8):
     name_norm = normalize_name(player_name)
     candidates = []
     for row in ff_rows:
-        score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
+        name_score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
+        score = name_score + club_score(futmondo_club, row.get("club")) + role_score(futmondo_role, row.get("role"))
         candidates.append((score, row))
     candidates.sort(key=lambda item: item[0], reverse=True)
     return candidates[:limit]
@@ -560,7 +615,12 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
         index_links.append(
             f'<a class="inline-flex border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50" href="#{row_anchor}">{esc(row["player_name"])}</a>'
         )
-        candidates = candidate_matches(row["player_name"], ff_options)
+        candidates = candidate_matches(
+            row["player_name"],
+            ff_options,
+            futmondo_club=row.get("futmondo_club"),
+            futmondo_role=row.get("role"),
+        )
         candidate_text = ", ".join(
             f"{candidate['ff_name']} ({candidate.get('club', '')})" for _, candidate in candidates[:4]
         )
@@ -573,6 +633,7 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
                     <a class="mt-1 inline-flex text-xs font-semibold text-emerald-700 hover:underline" href="#top">Arriba</a>
                 </td>
                 <td class="px-3 py-2">{esc(row['fantasy_team'])}</td>
+                <td class="px-3 py-2 font-semibold text-slate-700">{esc(row.get('futmondo_club'))}</td>
                 <td class="px-3 py-2">{esc(row['role'])}</td>
                 <td class="px-3 py-2">
                     <input class="mapping-input w-full border border-slate-300 bg-white px-2 py-1 text-sm" list="ff-player-options" placeholder="Escribe o elige nombre FF">
@@ -623,7 +684,7 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
             <div class="overflow-x-auto">
                 <table class="min-w-full text-left text-sm">
                     <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
-                        <tr><th class="px-3 py-2">Futmondo</th><th class="px-3 py-2">Equipo fantasy</th><th class="px-3 py-2">Rol</th><th class="px-3 py-2">Nombre en FutbolFantasy</th></tr>
+                        <tr><th class="px-3 py-2">Futmondo</th><th class="px-3 py-2">Equipo fantasy</th><th class="px-3 py-2">Club Futmondo</th><th class="px-3 py-2">Rol</th><th class="px-3 py-2">Nombre en FutbolFantasy</th></tr>
                     </thead>
                     <tbody id="mapping-body" class="divide-y divide-slate-100">{''.join(rows_html)}</tbody>
                 </table>
@@ -725,16 +786,18 @@ def main():
     championship_path = export_dir / f"championshipplayers_{stamp}.json"
     championship_path.write_text(json.dumps(championship_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    matches, ff_rows = fetch_futbolfantasy_round(
+    matches, ff_rows, all_ff_rows = fetch_futbolfantasy_round(
         args.round_number,
         delay=args.delay,
         max_days_from_start=args.max_days_from_start,
+        return_all_rows=True,
     )
     ff_path = export_dir / f"futbolfantasy_jornada_{args.round_number}_{stamp}.json"
     ff_path.write_text(json.dumps({"matches": matches, "players": ff_rows}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     overrides = load_matching_overrides(args.matching_overrides)
-    assessment = build_assessment(championship_data, ff_rows, overrides=overrides)
+    team_id_map = build_team_id_map(championship_data, all_ff_rows)
+    assessment = build_assessment(championship_data, ff_rows, overrides=overrides, team_id_map=team_id_map)
     csv_path = export_dir / f"alineacion_asistente_jornada_{args.round_number}_{stamp}.csv"
     html_path = args.docs_dir / f"asistente_alineacion_{args.season}_j{args.round_number}.html"
     stable_html_path = args.docs_dir / "asistente_alineacion.html"
@@ -742,7 +805,7 @@ def main():
     write_csv(csv_path, assessment)
     render_html(assessment, args.season, args.round_number, html_path)
     render_html(assessment, args.season, args.round_number, stable_html_path)
-    render_matching_review_html(assessment, ff_rows, args.season, args.round_number, matching_html_path)
+    render_matching_review_html(assessment, all_ff_rows, args.season, args.round_number, matching_html_path)
 
     print(f"Jugadores evaluados: {len(assessment)}")
     print(f"Futmondo JSON: {championship_path}")
