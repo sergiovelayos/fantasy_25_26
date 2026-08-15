@@ -255,6 +255,24 @@ def render_season_selector(seasons, current_season):
     return "\n".join(options)
 
 
+def render_nav_links(season, active):
+    links = [
+        ("Mercado", f"index_{season}.html", active == "market"),
+        ("Resumen", f"resumen_liga_{season}.html", active == "summary"),
+    ]
+    assistant_path = DEFAULT_OUTPUT.parent / f"asistente_alineacion_{season}_j1.html"
+    if assistant_path.exists():
+        links.append(("Asistente", assistant_path.name, active == "assistant"))
+
+    rendered = []
+    for label, href, is_active in links:
+        cls = "bg-indigo-700 text-white" if is_active else "border border-gray-400 text-gray-800 hover:bg-white"
+        rendered.append(
+            f'<a class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold {cls}" href="{href}">{label}</a>'
+        )
+    return "\n".join(rendered)
+
+
 def table_empty(colspan, text):
     return f'<tr><td class="py-3 px-4 text-gray-500" colspan="{colspan}">{text}</td></tr>'
 
@@ -310,6 +328,7 @@ def generate_html(season, seasons, conversion_rate, offers, sales, buyer_stats, 
             """
 
     selector_options = render_season_selector(seasons, season)
+    nav_links = render_nav_links(season, "market")
     label = season_label(season)
     updated = datetime.now().strftime("%d/%m/%Y %H:%M")
 
@@ -342,8 +361,7 @@ def generate_html(season, seasons, conversion_rate, offers, sales, buyer_stats, 
                         {selector_options}
                     </select>
                     <nav class="flex gap-2">
-                        <a class="inline-flex items-center justify-center bg-indigo-700 px-4 py-2 text-sm font-semibold text-white" href="index_{season}.html">Mercado</a>
-                        <a class="inline-flex items-center justify-center border border-gray-400 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-white" href="resumen_liga_{season}.html">Resumen</a>
+                        {nav_links}
                     </nav>
                 </div>
             </div>

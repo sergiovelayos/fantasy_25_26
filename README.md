@@ -84,6 +84,9 @@ El script `run_futmondo.sh` encadena:
     `python generate_web_report.py` (Actualiza `docs/index.html` y crea una página de mercado por temporada disponible)
 *   **Generar el dashboard resumen de liga:**
     `python generate_league_dashboard.py` (Actualiza `docs/resumen_liga.html` y crea una página por temporada disponible)
+*   **Generar el asistente de alineación por jornada:**
+    `python evaluate_lineup_assistant.py --season 2026_2027 --round 1`
+    - Cruza las plantillas de todos los equipos de Futmondo con las alineaciones probables de FutbolFantasy.
 *   **Pipeline completo:**
     `./run_futmondo.sh`
 

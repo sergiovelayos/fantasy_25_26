@@ -171,11 +171,19 @@ def build_market_insights(signings, season, market_file=DEFAULT_MARKET_FILE):
 def build_summary(rankings_path, signings_path, season):
     has_rankings = rankings_path is not None
     if has_rankings:
-        rankings = pd.read_csv(rankings_path)
-        general_path = latest_file(rankings_path.parent, "clasificacion_general_*.csv")
-        general = pd.read_csv(general_path)
-        rankings["round_number"] = pd.to_numeric(rankings["round_number"])
-        rankings["points"] = pd.to_numeric(rankings["points"])
+        try:
+            rankings = pd.read_csv(rankings_path)
+        except pd.errors.EmptyDataError:
+            rankings = pd.DataFrame(columns=["round_number", "points", "userteam_name"])
+        has_rankings = not rankings.empty and {"round_number", "points", "userteam_name"}.issubset(rankings.columns)
+        if has_rankings:
+            general_path = latest_file(rankings_path.parent, "clasificacion_general_*.csv")
+            general = pd.read_csv(general_path)
+            rankings["round_number"] = pd.to_numeric(rankings["round_number"])
+            rankings["points"] = pd.to_numeric(rankings["points"])
+        else:
+            general_path = None
+            general = pd.DataFrame(columns=["userteam_id", "userteam_name"])
     else:
         rankings = pd.DataFrame(columns=["round_number", "points", "userteam_name"])
         general_path = None
@@ -390,6 +398,24 @@ def render_season_selector(seasons, current_season):
     return "\n".join(options)
 
 
+def render_nav_links(season, active):
+    links = [
+        ("Resumen", f"resumen_liga_{season}.html", active == "summary"),
+        ("Mercado", f"index_{season}.html", active == "market"),
+    ]
+    assistant_path = DEFAULT_OUTPUT.parent / f"asistente_alineacion_{season}_j1.html"
+    if assistant_path.exists():
+        links.append(("Asistente", assistant_path.name, active == "assistant"))
+
+    rendered = []
+    for label, href, is_active in links:
+        cls = "bg-emerald-700 text-white" if is_active else "border border-slate-400 text-slate-800 hover:bg-white"
+        rendered.append(
+            f'<a class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold {cls}" href="{href}">{label}</a>'
+        )
+    return "\n".join(rendered)
+
+
 def render_dashboard(summary, season, seasons=None):
     has_rankings = summary["has_rankings"]
     winner_count_rows = table_rows(
@@ -541,7 +567,7 @@ def render_dashboard(summary, season, seasons=None):
             <td class="px-4 py-3 text-right tabular-nums">{format_money(row['income'])}</td>
             <td class="px-4 py-3 text-right tabular-nums">{format_money(row['net'])}</td>
         </tr>
-        """
+        """.strip()
         for row in summary["team_rows"]
     )
     team_market_rows = "\n".join(
@@ -554,7 +580,7 @@ def render_dashboard(summary, season, seasons=None):
             <td class="px-4 py-3 text-right tabular-nums">{format_money(row['income'])}</td>
             <td class="px-4 py-3 text-right tabular-nums">{format_money(row['net'])}</td>
         </tr>
-        """
+        """.strip()
         for row in sorted(summary["team_rows"], key=lambda item: (-item["spend"], -item["signings"], item["team"]))
     )
 
@@ -645,6 +671,7 @@ def render_dashboard(summary, season, seasons=None):
     season_label = season.replace("_", "-")
     seasons = seasons or [season]
     selector_options = render_season_selector(seasons, season)
+    nav_links = render_nav_links(season, "summary")
 
     return f"""<!DOCTYPE html>
 <html lang="es">
@@ -675,8 +702,7 @@ def render_dashboard(summary, season, seasons=None):
                         {selector_options}
                     </select>
                     <nav class="flex gap-2">
-                        <a class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white" href="resumen_liga_{season}.html">Resumen</a>
-                        <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
+                        {nav_links}
                     </nav>
                 </div>
             </div>
