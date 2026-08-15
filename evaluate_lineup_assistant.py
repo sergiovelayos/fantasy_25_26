@@ -18,10 +18,34 @@ from dotenv import load_dotenv
 LOGIN_API_URL = "https://api.futmondo.com/5/login/with_mail"
 CHAMPIONSHIP_PLAYERS_API_URL = "https://api.futmondo.com/5/league/championshipplayers"
 FUTBOLFANTASY_LINEUPS_URL = "https://www.futbolfantasy.com/laliga/posibles-alineaciones"
+FUTBOLFANTASY_TEAM_URL = "https://www.futbolfantasy.com/laliga/equipos/{slug}/plantilla"
 DEFAULT_SEASON = "2026_2027"
 DEFAULT_EXPORTS_DIR = Path("data/exports")
 DEFAULT_DOCS_DIR = Path("docs")
 DEFAULT_MATCHING_OVERRIDES = Path("config/player_name_overrides.json")
+
+FF_TEAM_SLUGS = {
+    "Alavés": "alaves",
+    "Athletic": "athletic",
+    "Atlético": "atletico",
+    "Barcelona": "barcelona",
+    "Betis": "betis",
+    "Celta": "celta",
+    "Deportivo": "deportivo",
+    "Elche": "elche",
+    "Espanyol": "espanyol",
+    "Getafe": "getafe",
+    "Levante": "levante",
+    "Málaga": "malaga",
+    "Osasuna": "osasuna",
+    "Racing": "racing",
+    "Rayo": "rayo-vallecano",
+    "Real Madrid": "real-madrid",
+    "Real Sociedad": "real-sociedad",
+    "Sevilla": "sevilla",
+    "Valencia": "valencia",
+    "Villarreal": "villarreal",
+}
 
 REQUEST_HEADERS = {
     "Accept": "*/*",
@@ -64,6 +88,24 @@ def anchor_id(value):
     return re.sub(r"[^a-z0-9]+", "-", value).strip("-") or "jugador"
 
 
+def clean_player_name(value):
+    value = value or ""
+    value = re.sub(r"^\s*\d+\.\s*", "", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def normalize_role(value):
+    value = normalize_name(value)
+    mapping = {
+        "portero": "portero",
+        "defensa": "defensa",
+        "centrocampista": "centrocampista",
+        "mediocampista": "centrocampista",
+        "delantero": "delantero",
+    }
+    return mapping.get(value, value)
+
+
 def login(session):
     payload = {
         "header": {"token": None, "userid": ""},
@@ -103,7 +145,14 @@ def lineup_url(round_number):
 
 
 def fetch_html(url):
-    response = requests.get(url, headers=FF_HEADERS, timeout=30)
+    for attempt in range(3):
+        response = requests.get(url, headers=FF_HEADERS, timeout=30)
+        if response.status_code != 429:
+            response.raise_for_status()
+            return response.text
+        wait_seconds = 3 * (attempt + 1)
+        print(f"FutbolFantasy limita la peticion; reintento en {wait_seconds}s: {url}")
+        time.sleep(wait_seconds)
     response.raise_for_status()
     return response.text
 
@@ -227,6 +276,7 @@ def extract_players_from(container, match, side, lineup_status):
                 "probability": player_probability(node),
                 "role": player_role(node),
                 "availability": "",
+                "source": "alineacion",
             }
         )
     return rows
@@ -263,6 +313,7 @@ def extract_absences(soup, match, side, availability):
                     "probability": 0,
                     "role": "",
                     "availability": availability,
+                    "source": "alineacion",
                 }
             )
     return rows
@@ -276,6 +327,66 @@ def parse_match_lineups(match):
         rows.extend(extract_players_from(soup.select_one(f".campo-wrapper.{side}.suplentes"), match, side, "alternativa"))
         rows.extend(extract_absences(soup, match, side, "lesionado"))
         rows.extend(extract_absences(soup, match, side, "sancionado"))
+    return rows
+
+
+def parse_team_squad(club, delay=0):
+    slug = FF_TEAM_SLUGS.get(club)
+    if not slug:
+        print(f"Sin slug de FutbolFantasy para plantilla: {club}")
+        return []
+
+    try:
+        soup = BeautifulSoup(fetch_html(FUTBOLFANTASY_TEAM_URL.format(slug=slug)), "html.parser")
+    except requests.HTTPError as exc:
+        print(f"No se pudo descargar plantilla FF de {club}: {exc}")
+        return []
+    rows = []
+    for node in soup.select(".elemento.wjugador"):
+        link = node.select_one("a.jugador")
+        if not link:
+            continue
+        role_el = node.select_one(".comentario .posicion")
+        role = normalize_role(role_el.get_text(" ", strip=True) if role_el else "")
+        detail = ""
+        comment = node.select_one(".comentario")
+        if comment:
+            detail = comment.get_text(" ", strip=True)
+            if role_el:
+                detail = detail.replace(role_el.get_text(" ", strip=True), "", 1)
+            detail = re.sub(r"\s+", " ", detail).strip()
+        name = clean_player_name(link.get_text(" ", strip=True))
+        if not name:
+            continue
+        rows.append(
+            {
+                "ff_name": name,
+                "ff_name_norm": normalize_name(name),
+                "club": club,
+                "opponent": "",
+                "home_away": "",
+                "match": "",
+                "match_start": "",
+                "match_url": link.get("href"),
+                "lineup_status": "plantilla",
+                "probability": "",
+                "role": role,
+                "role_detail": detail,
+                "availability": "",
+                "source": "plantilla",
+            }
+        )
+    if delay:
+        time.sleep(delay)
+    return rows
+
+
+def fetch_futbolfantasy_squads(matches, delay=0.1):
+    clubs = sorted({match.get("home_team") for match in matches} | {match.get("away_team") for match in matches})
+    rows = []
+    for index, club in enumerate([club for club in clubs if club], start=1):
+        print(f"FutbolFantasy plantilla {index}/{len(clubs)}: {club}")
+        rows.extend(parse_team_squad(club, delay=delay))
     return rows
 
 
@@ -319,8 +430,9 @@ def build_team_id_map(championship_data, ff_rows):
     return team_map
 
 
-def best_ff_match(player, ff_by_name, ff_rows, overrides=None):
+def best_ff_match(player, ff_by_name, ff_rows, overrides=None, team_id_map=None):
     overrides = overrides or {}
+    team_id_map = team_id_map or {}
     mapped_name = overrides.get(player.get("id")) or overrides.get(normalize_name(player.get("name")))
     if mapped_name:
         mapped_norm = normalize_name(mapped_name)
@@ -330,10 +442,16 @@ def best_ff_match(player, ff_by_name, ff_rows, overrides=None):
     name_norm = normalize_name(player.get("name"))
     if name_norm in ff_by_name:
         return ff_by_name[name_norm], 1.0
+
+    player_club = player.get("team") or team_id_map.get(player.get("teamId"), "")
+    player_role = player.get("role")
     candidates = []
     for row in ff_rows:
-        score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
-        if score >= 0.88:
+        name_score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
+        score = name_score + club_score(player_club, row.get("club")) + role_score(player_role, row.get("role"))
+        same_club = player_club and normalize_name(player_club) == normalize_name(row.get("club"))
+        same_role = player_role and normalize_name(player_role) == normalize_name(row.get("role"))
+        if name_score >= 0.88 or (same_club and same_role and name_score >= 0.55):
             candidates.append((score, row))
     if not candidates:
         return None, 0
@@ -360,6 +478,8 @@ def recommendation(row):
         if probability >= 50:
             return "Banquillo util / posible entrada"
         return "Solo emergencia"
+    if row["lineup_status"] == "plantilla":
+        return "Sin dato alineacion probable"
     return "Sin dato FutbolFantasy"
 
 
@@ -374,6 +494,8 @@ def recommendation_score(row):
         score += 40 + probability
     elif row["lineup_status"] == "alternativa":
         score += 10 + probability
+    elif row["lineup_status"] == "plantilla":
+        score -= 5
     else:
         score -= 10
     if row["home_away"] == "casa":
@@ -381,16 +503,23 @@ def recommendation_score(row):
     return score
 
 
-def build_assessment(championship_data, ff_rows, overrides=None, team_id_map=None):
+def build_assessment(championship_data, ff_rows, overrides=None, team_id_map=None, matching_rows=None):
     team_id_map = team_id_map or {}
+    matching_rows = matching_rows or ff_rows
     ff_by_name = {}
-    for row in sorted(ff_rows, key=lambda item: item.get("probability") or 0, reverse=True):
+    for row in sorted(matching_rows, key=lambda item: int(item.get("probability") or 0), reverse=True):
         ff_by_name.setdefault(row["ff_name_norm"], row)
 
     owned = [player for player in championship_data.get("answer", {}).get("players", []) if player.get("userteamId")]
     assessed = []
     for player in owned:
-        ff_row, match_score = best_ff_match(player, ff_by_name, ff_rows, overrides=overrides)
+        ff_row, match_score = best_ff_match(
+            player,
+            ff_by_name,
+            matching_rows,
+            overrides=overrides,
+            team_id_map=team_id_map,
+        )
         base = {
             "player_id": player.get("id"),
             "fantasy_team": player.get("userteam"),
@@ -598,8 +727,18 @@ def club_score(futmondo_club, ff_club):
 
 def candidate_matches(player_name, ff_rows, futmondo_club="", futmondo_role="", limit=8):
     name_norm = normalize_name(player_name)
+    scoped_rows = ff_rows
+    if futmondo_club:
+        same_club = [row for row in scoped_rows if normalize_name(row.get("club")) == normalize_name(futmondo_club)]
+        if same_club:
+            scoped_rows = same_club
+    if futmondo_role:
+        same_role = [row for row in scoped_rows if normalize_name(row.get("role")) == normalize_name(futmondo_role)]
+        if same_role:
+            scoped_rows = same_role
+
     candidates = []
-    for row in ff_rows:
+    for row in scoped_rows:
         name_score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
         score = name_score + club_score(futmondo_club, row.get("club")) + role_score(futmondo_role, row.get("role"))
         candidates.append((score, row))
@@ -791,12 +930,22 @@ def main():
         max_days_from_start=args.max_days_from_start,
         return_all_rows=True,
     )
+    squad_rows = fetch_futbolfantasy_squads(parse_matches(args.round_number), delay=args.delay)
+    matching_rows = all_ff_rows + squad_rows
     ff_path = export_dir / f"futbolfantasy_jornada_{args.round_number}_{stamp}.json"
     ff_path.write_text(json.dumps({"matches": matches, "players": ff_rows}, ensure_ascii=False, indent=2), encoding="utf-8")
+    squads_path = export_dir / f"futbolfantasy_plantillas_jornada_{args.round_number}_{stamp}.json"
+    squads_path.write_text(json.dumps({"players": squad_rows}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     overrides = load_matching_overrides(args.matching_overrides)
-    team_id_map = build_team_id_map(championship_data, all_ff_rows)
-    assessment = build_assessment(championship_data, ff_rows, overrides=overrides, team_id_map=team_id_map)
+    team_id_map = build_team_id_map(championship_data, matching_rows)
+    assessment = build_assessment(
+        championship_data,
+        ff_rows,
+        overrides=overrides,
+        team_id_map=team_id_map,
+        matching_rows=matching_rows,
+    )
     csv_path = export_dir / f"alineacion_asistente_jornada_{args.round_number}_{stamp}.csv"
     html_path = args.docs_dir / f"asistente_alineacion_{args.season}_j{args.round_number}.html"
     stable_html_path = args.docs_dir / "asistente_alineacion.html"
@@ -804,11 +953,12 @@ def main():
     write_csv(csv_path, assessment)
     render_html(assessment, args.season, args.round_number, html_path)
     render_html(assessment, args.season, args.round_number, stable_html_path)
-    render_matching_review_html(assessment, all_ff_rows, args.season, args.round_number, matching_html_path)
+    render_matching_review_html(assessment, matching_rows, args.season, args.round_number, matching_html_path)
 
     print(f"Jugadores evaluados: {len(assessment)}")
     print(f"Futmondo JSON: {championship_path}")
     print(f"FutbolFantasy JSON: {ff_path}")
+    print(f"Plantillas FF JSON: {squads_path}")
     print(f"CSV: {csv_path}")
     print(f"HTML: {html_path}")
     print(f"HTML estable: {stable_html_path}")
