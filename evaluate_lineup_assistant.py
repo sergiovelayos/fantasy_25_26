@@ -457,7 +457,12 @@ def render_html(rows, season, round_number, output_path):
         grouped.setdefault(row["fantasy_team"] or "Sin equipo", []).append(row)
 
     sections = []
+    team_links = []
     for team, team_rows in grouped.items():
+        team_anchor = f"team-{anchor_id(team)}"
+        team_links.append(
+            f'<a class="inline-flex border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-white" href="#{team_anchor}">{esc(team)}</a>'
+        )
         table_rows = []
         for row in team_rows:
             probability = f"{row['probability']}%" if row["probability"] != "" and row["probability"] is not None else "-"
@@ -478,8 +483,11 @@ def render_html(rows, season, round_number, output_path):
             )
         sections.append(
             f"""
-            <section class="mt-8 bg-white p-5 shadow-sm">
-                <h2 class="text-xl font-bold">{esc(team)}</h2>
+            <section id="{team_anchor}" class="mt-8 bg-white p-5 shadow-sm">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 class="text-xl font-bold">{esc(team)}</h2>
+                    <a class="text-sm font-semibold text-emerald-700 hover:underline" href="#top">Arriba</a>
+                </div>
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full text-left text-sm">
                         <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
@@ -509,7 +517,7 @@ def render_html(rows, season, round_number, output_path):
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <main id="top" class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <header class="border-b border-slate-300 pb-6">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
@@ -526,6 +534,15 @@ def render_html(rows, season, round_number, output_path):
                 </nav>
             </div>
         </header>
+        <section class="mt-6 bg-white p-5 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 class="text-lg font-bold">Índice de equipos</h2>
+                <span class="text-sm font-semibold text-slate-500">{len(grouped)} equipos</span>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+                {''.join(team_links)}
+            </div>
+        </section>
         {''.join(sections)}
     </main>
 </body>
@@ -609,12 +626,7 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
         datalist_options.append(f'<option value="{esc(value)}" label="{esc(label)}"></option>')
 
     rows_html = []
-    index_links = []
     for row in unmatched:
-        row_anchor = f"player-{anchor_id(row['player_id'] or row['player_name'])}"
-        index_links.append(
-            f'<a class="inline-flex border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50" href="#{row_anchor}">{esc(row["player_name"])}</a>'
-        )
         candidates = candidate_matches(
             row["player_name"],
             ff_options,
@@ -627,11 +639,8 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
 
         rows_html.append(
             f"""
-            <tr id="{row_anchor}" data-player-id="{esc(row['player_id'])}" data-player-name="{esc(row['player_name'])}">
-                <td class="px-3 py-2">
-                    <div class="font-semibold">{esc(row['player_name'])}</div>
-                    <a class="mt-1 inline-flex text-xs font-semibold text-emerald-700 hover:underline" href="#top">Arriba</a>
-                </td>
+            <tr data-player-id="{esc(row['player_id'])}" data-player-name="{esc(row['player_name'])}">
+                <td class="px-3 py-2 font-semibold">{esc(row['player_name'])}</td>
                 <td class="px-3 py-2">{esc(row['fantasy_team'])}</td>
                 <td class="px-3 py-2 font-semibold text-slate-700">{esc(row.get('futmondo_club'))}</td>
                 <td class="px-3 py-2">{esc(row['role'])}</td>
@@ -653,7 +662,7 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <main id="top" class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <header class="border-b border-slate-300 pb-6">
             <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · {season_label} · Jornada {round_number}</p>
             <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Ayuda al matching</h1>
@@ -665,16 +674,6 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
                 <button id="download-json" class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white">Descargar JSON</button>
             </nav>
         </header>
-
-        <section class="mt-6 bg-white p-5 shadow-sm">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h2 class="text-lg font-bold">Índice de jugadores</h2>
-                <span class="text-sm font-semibold text-slate-500">{len(unmatched)} pendientes</span>
-            </div>
-            <div class="mt-4 flex max-h-40 flex-wrap gap-2 overflow-y-auto pr-2">
-                {''.join(index_links)}
-            </div>
-        </section>
 
         <section class="mt-6 bg-white p-5 shadow-sm">
             <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
