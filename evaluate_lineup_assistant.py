@@ -440,18 +440,22 @@ def best_ff_match(player, ff_by_name, ff_rows, overrides=None, team_id_map=None)
             return ff_by_name[mapped_norm], 1.0
 
     name_norm = normalize_name(player.get("name"))
-    if name_norm in ff_by_name:
-        return ff_by_name[name_norm], 1.0
-
     player_club = player.get("team") or team_id_map.get(player.get("teamId"), "")
     player_role = player.get("role")
     candidates = []
     for row in ff_rows:
         name_score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
-        score = name_score + club_score(player_club, row.get("club")) + role_score(player_role, row.get("role"))
+        exact_score = 0.4 if name_norm == row["ff_name_norm"] else 0
+        score = (
+            name_score
+            + exact_score
+            + club_score(player_club, row.get("club"))
+            + role_score(player_role, row.get("role"))
+            + source_score(row)
+        )
         same_club = player_club and normalize_name(player_club) == normalize_name(row.get("club"))
         same_role = player_role and normalize_name(player_role) == normalize_name(row.get("role"))
-        if name_score >= 0.88 or (same_club and same_role and name_score >= 0.55):
+        if name_score >= 0.88 or (same_club and name_score >= 0.55) or (same_club and same_role and name_score >= 0.5):
             candidates.append((score, row))
     if not candidates:
         return None, 0
@@ -725,6 +729,12 @@ def club_score(futmondo_club, ff_club):
     return 0.3 if normalize_name(futmondo_club) == normalize_name(ff_club) else -0.2
 
 
+def source_score(row):
+    if row.get("source") == "alineacion":
+        return 1.25
+    return 0
+
+
 def candidate_matches(player_name, ff_rows, futmondo_club="", futmondo_role="", limit=8):
     name_norm = normalize_name(player_name)
     scoped_rows = ff_rows
@@ -740,7 +750,12 @@ def candidate_matches(player_name, ff_rows, futmondo_club="", futmondo_role="", 
     candidates = []
     for row in scoped_rows:
         name_score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
-        score = name_score + club_score(futmondo_club, row.get("club")) + role_score(futmondo_role, row.get("role"))
+        score = (
+            name_score
+            + club_score(futmondo_club, row.get("club"))
+            + role_score(futmondo_role, row.get("role"))
+            + source_score(row)
+        )
         candidates.append((score, row))
     candidates.sort(key=lambda item: item[0], reverse=True)
     return candidates[:limit]
