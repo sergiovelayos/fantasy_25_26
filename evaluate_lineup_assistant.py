@@ -59,6 +59,11 @@ def esc(value):
     return html.escape("" if value is None else str(value))
 
 
+def anchor_id(value):
+    value = normalize_name(value)
+    return re.sub(r"[^a-z0-9]+", "-", value).strip("-") or "jugador"
+
+
 def login(session):
     payload = {
         "header": {"token": None, "userid": ""},
@@ -549,7 +554,12 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
         datalist_options.append(f'<option value="{esc(value)}" label="{esc(label)}"></option>')
 
     rows_html = []
+    index_links = []
     for row in unmatched:
+        row_anchor = f"player-{anchor_id(row['player_id'] or row['player_name'])}"
+        index_links.append(
+            f'<a class="inline-flex border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50" href="#{row_anchor}">{esc(row["player_name"])}</a>'
+        )
         candidates = candidate_matches(row["player_name"], ff_options)
         candidate_text = ", ".join(
             f"{candidate['ff_name']} ({candidate.get('club', '')})" for _, candidate in candidates[:4]
@@ -557,8 +567,11 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
 
         rows_html.append(
             f"""
-            <tr data-player-id="{esc(row['player_id'])}" data-player-name="{esc(row['player_name'])}">
-                <td class="px-3 py-2 font-semibold">{esc(row['player_name'])}</td>
+            <tr id="{row_anchor}" data-player-id="{esc(row['player_id'])}" data-player-name="{esc(row['player_name'])}">
+                <td class="px-3 py-2">
+                    <div class="font-semibold">{esc(row['player_name'])}</div>
+                    <a class="mt-1 inline-flex text-xs font-semibold text-emerald-700 hover:underline" href="#top">Arriba</a>
+                </td>
                 <td class="px-3 py-2">{esc(row['fantasy_team'])}</td>
                 <td class="px-3 py-2">{esc(row['role'])}</td>
                 <td class="px-3 py-2">
@@ -579,7 +592,7 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <main id="top" class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <header class="border-b border-slate-300 pb-6">
             <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · {season_label} · Jornada {round_number}</p>
             <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Ayuda al matching</h1>
@@ -591,6 +604,16 @@ def render_matching_review_html(assessment, ff_rows, season, round_number, outpu
                 <button id="download-json" class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white">Descargar JSON</button>
             </nav>
         </header>
+
+        <section class="mt-6 bg-white p-5 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 class="text-lg font-bold">Índice de jugadores</h2>
+                <span class="text-sm font-semibold text-slate-500">{len(unmatched)} pendientes</span>
+            </div>
+            <div class="mt-4 flex max-h-40 flex-wrap gap-2 overflow-y-auto pr-2">
+                {''.join(index_links)}
+            </div>
+        </section>
 
         <section class="mt-6 bg-white p-5 shadow-sm">
             <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
