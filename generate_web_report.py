@@ -17,6 +17,7 @@ DEFAULT_OUTPUT = Path("docs/index.html")
 LEGACY_MARKET_FILE = Path("data/futmondo_market.json")
 LEGACY_SIGNINGS_FILE = Path("data/fichajes_hist_file/pressroom_2025_2026.json")
 ASSETS_DIR = Path("docs/assets")
+MATCHING_OVERRIDES_FILE = Path("config/player_name_overrides.json")
 
 plt.style.use("ggplot")
 sns.set_palette("husl")
@@ -293,7 +294,20 @@ def load_lineup_rows(exports_dir, season):
     return rows if isinstance(rows, list) else []
 
 
-def best_lineup_match(name, ff_by_name, ff_rows):
+def load_matching_overrides(path=MATCHING_OVERRIDES_FILE):
+    if not path.exists():
+        return {}
+    return json.load(path.open(encoding="utf-8"))
+
+
+def best_lineup_match(name, ff_by_name, ff_rows, player_id=None, overrides=None):
+    overrides = overrides or {}
+    mapped_name = overrides.get(player_id) or overrides.get(normalize_name(name))
+    if mapped_name:
+        mapped_norm = normalize_name(mapped_name)
+        if mapped_norm in ff_by_name:
+            return ff_by_name[mapped_norm], 1.0
+
     name_norm = normalize_name(name)
     if name_norm in ff_by_name:
         return ff_by_name[name_norm], 1.0
@@ -308,7 +322,7 @@ def best_lineup_match(name, ff_by_name, ff_rows):
     return candidates[0][1], candidates[0][0]
 
 
-def enrich_market_with_lineups(current_market, ff_rows):
+def enrich_market_with_lineups(current_market, ff_rows, overrides=None):
     if current_market.empty:
         return current_market
     market = current_market.copy()
@@ -329,7 +343,7 @@ def enrich_market_with_lineups(current_market, ff_rows):
         ff_by_name.setdefault(row.get("ff_name_norm") or normalize_name(row.get("ff_name")), row)
 
     for index, row in market.iterrows():
-        ff_row, _ = best_lineup_match(row.get("name"), ff_by_name, ff_rows)
+        ff_row, _ = best_lineup_match(row.get("name"), ff_by_name, ff_rows, player_id=row.get("player_id"), overrides=overrides)
         if not ff_row:
             continue
         market.at[index, "ff_status"] = ff_row.get("lineup_status", "sin dato")
@@ -356,6 +370,9 @@ def render_nav_links(season, active):
     assistant_path = DEFAULT_OUTPUT.parent / "asistente_alineacion.html"
     if assistant_path.exists():
         links.append(("Asistente", assistant_path.name, active == "assistant"))
+    matching_path = DEFAULT_OUTPUT.parent / "matching_futbolfantasy.html"
+    if matching_path.exists():
+        links.append(("Matching", matching_path.name, active == "matching"))
 
     rendered = []
     for label, href, is_active in links:
@@ -571,7 +588,7 @@ def build_market_dashboard(exports_dir, output, season, seasons):
     top_signings = signings.sort_values("price", ascending=False).head(10) if not signings.empty else signings
     current_market = get_current_market(market)
     lineup_rows = load_lineup_rows(exports_dir, season)
-    current_market = enrich_market_with_lineups(current_market, lineup_rows)
+    current_market = enrich_market_with_lineups(current_market, lineup_rows, overrides=load_matching_overrides())
     html = generate_html(
         season,
         seasons,

@@ -21,6 +21,7 @@ FUTBOLFANTASY_LINEUPS_URL = "https://www.futbolfantasy.com/laliga/posibles-aline
 DEFAULT_SEASON = "2026_2027"
 DEFAULT_EXPORTS_DIR = Path("data/exports")
 DEFAULT_DOCS_DIR = Path("docs")
+DEFAULT_MATCHING_OVERRIDES = Path("config/player_name_overrides.json")
 
 REQUEST_HEADERS = {
     "Accept": "*/*",
@@ -165,6 +166,12 @@ def load_schedule(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_matching_overrides(path):
+    if not path or not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def schedule_action(schedule, today):
     for entry in schedule:
         starts_on = date.fromisoformat(entry["starts_on"])
@@ -268,7 +275,14 @@ def fetch_futbolfantasy_round(round_number, delay=0.2, max_days_from_start=4):
     return matches, rows
 
 
-def best_ff_match(player, ff_by_name, ff_rows):
+def best_ff_match(player, ff_by_name, ff_rows, overrides=None):
+    overrides = overrides or {}
+    mapped_name = overrides.get(player.get("id")) or overrides.get(normalize_name(player.get("name")))
+    if mapped_name:
+        mapped_norm = normalize_name(mapped_name)
+        if mapped_norm in ff_by_name:
+            return ff_by_name[mapped_norm], 1.0
+
     name_norm = normalize_name(player.get("name"))
     if name_norm in ff_by_name:
         return ff_by_name[name_norm], 1.0
@@ -323,7 +337,7 @@ def recommendation_score(row):
     return score
 
 
-def build_assessment(championship_data, ff_rows):
+def build_assessment(championship_data, ff_rows, overrides=None):
     ff_by_name = {}
     for row in sorted(ff_rows, key=lambda item: item.get("probability") or 0, reverse=True):
         ff_by_name.setdefault(row["ff_name_norm"], row)
@@ -331,8 +345,9 @@ def build_assessment(championship_data, ff_rows):
     owned = [player for player in championship_data.get("answer", {}).get("players", []) if player.get("userteamId")]
     assessed = []
     for player in owned:
-        ff_row, match_score = best_ff_match(player, ff_by_name, ff_rows)
+        ff_row, match_score = best_ff_match(player, ff_by_name, ff_rows, overrides=overrides)
         base = {
+            "player_id": player.get("id"),
             "fantasy_team": player.get("userteam"),
             "player_name": player.get("name"),
             "role": player.get("role"),
@@ -460,6 +475,7 @@ def render_html(rows, season, round_number, output_path):
                     <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
                     <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="resumen_liga_{season}.html">Resumen</a>
                     <a class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white" href="asistente_alineacion.html">Asistente</a>
+                    <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="matching_futbolfantasy.html">Matching</a>
                 </nav>
             </div>
         </header>
@@ -504,6 +520,147 @@ def render_suspended_html(season, output_path, message):
     output_path.write_text(html_content, encoding="utf-8")
 
 
+def candidate_matches(player_name, ff_rows, limit=8):
+    name_norm = normalize_name(player_name)
+    candidates = []
+    for row in ff_rows:
+        score = SequenceMatcher(None, name_norm, row["ff_name_norm"]).ratio()
+        candidates.append((score, row))
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return candidates[:limit]
+
+
+def render_matching_review_html(assessment, ff_rows, season, round_number, output_path):
+    updated = datetime.now().strftime("%d/%m/%Y %H:%M")
+    season_label = season.replace("_", "-")
+    ff_options = sorted(
+        ff_rows,
+        key=lambda row: (row.get("club") or "", row.get("ff_name") or ""),
+    )
+    unmatched = [row for row in assessment if row["lineup_status"] == "sin dato"]
+    datalist_options = []
+    seen_options = set()
+    for candidate in ff_options:
+        value = candidate["ff_name"]
+        if value in seen_options:
+            continue
+        seen_options.add(value)
+        label = f"{candidate.get('club', '')} · {candidate.get('lineup_status', '')}"
+        datalist_options.append(f'<option value="{esc(value)}" label="{esc(label)}"></option>')
+
+    rows_html = []
+    for row in unmatched:
+        candidates = candidate_matches(row["player_name"], ff_options)
+        candidate_text = ", ".join(
+            f"{candidate['ff_name']} ({candidate.get('club', '')})" for _, candidate in candidates[:4]
+        )
+
+        rows_html.append(
+            f"""
+            <tr data-player-id="{esc(row['player_id'])}" data-player-name="{esc(row['player_name'])}">
+                <td class="px-3 py-2 font-semibold">{esc(row['player_name'])}</td>
+                <td class="px-3 py-2">{esc(row['fantasy_team'])}</td>
+                <td class="px-3 py-2">{esc(row['role'])}</td>
+                <td class="px-3 py-2">
+                    <input class="mapping-input w-full border border-slate-300 bg-white px-2 py-1 text-sm" list="ff-player-options" placeholder="Escribe o elige nombre FF">
+                    <p class="mt-1 text-xs text-slate-500">Sugerencias: {esc(candidate_text)}</p>
+                </td>
+            </tr>
+            """.strip()
+        )
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching FutbolFantasy {season_label} J{round_number}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-900">
+    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <header class="border-b border-slate-300 pb-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · {season_label} · Jornada {round_number}</p>
+            <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Ayuda al matching</h1>
+            <p class="mt-2 text-sm text-slate-600">Actualizado: {updated}. Jugadores sin cruce: {len(unmatched)}.</p>
+            <nav class="mt-4 flex flex-wrap gap-2">
+                <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="index_{season}.html">Mercado</a>
+                <a class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white" href="asistente_alineacion.html">Asistente</a>
+                <button id="copy-json" class="inline-flex items-center justify-center bg-emerald-700 px-4 py-2 text-sm font-semibold text-white">Copiar JSON</button>
+                <button id="download-json" class="inline-flex items-center justify-center border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-white">Descargar JSON</button>
+            </nav>
+        </header>
+
+        <section class="mt-6 bg-white p-5 shadow-sm">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <input id="filter" class="border border-slate-300 px-3 py-2 text-sm" placeholder="Filtrar jugador o equipo">
+                <p id="status" class="text-sm font-semibold text-slate-600">Selecciona equivalencias y copia el JSON.</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-3 py-2">Futmondo</th><th class="px-3 py-2">Equipo fantasy</th><th class="px-3 py-2">Rol</th><th class="px-3 py-2">Nombre en FutbolFantasy</th></tr>
+                    </thead>
+                    <tbody id="mapping-body" class="divide-y divide-slate-100">{''.join(rows_html)}</tbody>
+                </table>
+                <datalist id="ff-player-options">{''.join(datalist_options)}</datalist>
+            </div>
+        </section>
+    </main>
+    <script>
+        const storageKey = "futmondo_ff_matching_{season}_{round_number}";
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "{{}}");
+        const inputs = Array.from(document.querySelectorAll(".mapping-input"));
+        function currentMappings() {{
+            const mappings = {{}};
+            inputs.forEach((input) => {{
+                const row = input.closest("tr");
+                if (input.value.trim()) {{
+                    mappings[row.dataset.playerId] = input.value.trim();
+                }}
+            }});
+            return mappings;
+        }}
+        function persist() {{
+            localStorage.setItem(storageKey, JSON.stringify(currentMappings()));
+            document.getElementById("status").textContent = `${{Object.keys(currentMappings()).length}} equivalencias preparadas.`;
+        }}
+        inputs.forEach((input) => {{
+            const row = input.closest("tr");
+            if (saved[row.dataset.playerId]) input.value = saved[row.dataset.playerId];
+            input.addEventListener("input", persist);
+        }});
+        persist();
+        document.getElementById("filter").addEventListener("input", (event) => {{
+            const term = event.target.value.toLowerCase();
+            document.querySelectorAll("#mapping-body tr").forEach((row) => {{
+                row.style.display = row.textContent.toLowerCase().includes(term) ? "" : "none";
+            }});
+        }});
+        function payloadText() {{
+            return JSON.stringify(currentMappings(), null, 2);
+        }}
+        document.getElementById("copy-json").addEventListener("click", async () => {{
+            await navigator.clipboard.writeText(payloadText());
+            document.getElementById("status").textContent = "JSON copiado. Pegalo en config/player_name_overrides.json.";
+        }});
+        document.getElementById("download-json").addEventListener("click", () => {{
+            const blob = new Blob([payloadText()], {{ type: "application/json" }});
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "player_name_overrides.json";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }});
+    </script>
+</body>
+</html>
+"""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(html_content, encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Evalua plantillas Futmondo contra alineaciones probables de FutbolFantasy.")
     parser.add_argument("--season", default=DEFAULT_SEASON)
@@ -516,6 +673,7 @@ def main():
     parser.add_argument("--skip-if-not-scheduled", action="store_true")
     parser.add_argument("--suspend-if-not-scheduled", action="store_true")
     parser.add_argument("--max-days-from-start", default=4, type=int)
+    parser.add_argument("--matching-overrides", default=DEFAULT_MATCHING_OVERRIDES, type=Path)
     args = parser.parse_args()
 
     today = date.fromisoformat(args.today) if args.today else date.today()
@@ -552,13 +710,16 @@ def main():
     ff_path = export_dir / f"futbolfantasy_jornada_{args.round_number}_{stamp}.json"
     ff_path.write_text(json.dumps({"matches": matches, "players": ff_rows}, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    assessment = build_assessment(championship_data, ff_rows)
+    overrides = load_matching_overrides(args.matching_overrides)
+    assessment = build_assessment(championship_data, ff_rows, overrides=overrides)
     csv_path = export_dir / f"alineacion_asistente_jornada_{args.round_number}_{stamp}.csv"
     html_path = args.docs_dir / f"asistente_alineacion_{args.season}_j{args.round_number}.html"
     stable_html_path = args.docs_dir / "asistente_alineacion.html"
+    matching_html_path = args.docs_dir / "matching_futbolfantasy.html"
     write_csv(csv_path, assessment)
     render_html(assessment, args.season, args.round_number, html_path)
     render_html(assessment, args.season, args.round_number, stable_html_path)
+    render_matching_review_html(assessment, ff_rows, args.season, args.round_number, matching_html_path)
 
     print(f"Jugadores evaluados: {len(assessment)}")
     print(f"Futmondo JSON: {championship_path}")
@@ -566,6 +727,7 @@ def main():
     print(f"CSV: {csv_path}")
     print(f"HTML: {html_path}")
     print(f"HTML estable: {stable_html_path}")
+    print(f"Matching: {matching_html_path}")
 
 
 if __name__ == "__main__":

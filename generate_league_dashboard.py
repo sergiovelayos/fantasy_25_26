@@ -406,6 +406,9 @@ def render_nav_links(season, active):
     assistant_path = DEFAULT_OUTPUT.parent / "asistente_alineacion.html"
     if assistant_path.exists():
         links.append(("Asistente", assistant_path.name, active == "assistant"))
+    matching_path = DEFAULT_OUTPUT.parent / "matching_futbolfantasy.html"
+    if matching_path.exists():
+        links.append(("Matching", matching_path.name, active == "matching"))
 
     rendered = []
     for label, href, is_active in links:
