@@ -909,6 +909,7 @@ def main():
     parser.add_argument("--today")
     parser.add_argument("--skip-if-not-scheduled", action="store_true")
     parser.add_argument("--suspend-if-not-scheduled", action="store_true")
+    parser.add_argument("--run-while-active", action="store_true")
     parser.add_argument("--max-days-from-start", default=4, type=int)
     parser.add_argument("--matching-overrides", default=DEFAULT_MATCHING_OVERRIDES, type=Path)
     args = parser.parse_args()
@@ -917,6 +918,8 @@ def main():
     if args.schedule:
         action, scheduled_round = schedule_action(load_schedule(args.schedule), today)
         if action == "run":
+            args.round_number = scheduled_round
+        elif action == "active" and args.run_while_active:
             args.round_number = scheduled_round
         elif args.skip_if_not_scheduled:
             if action == "active":
