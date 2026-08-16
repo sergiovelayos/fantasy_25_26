@@ -20,6 +20,9 @@ LEGACY_SIGNINGS_FILE = Path("data/fichajes_hist_file/pressroom_2025_2026.json")
 ASSETS_DIR = Path("docs/assets")
 MATCHING_OVERRIDES_FILE = Path("config/player_name_overrides.json")
 LOCAL_TZ = ZoneInfo("Europe/Madrid")
+PREVIOUS_PLAYER_FILES = {
+    "2026_2027": Path("data/jugadores_futmondo/championshipplayers_liga_25_26.csv"),
+}
 
 plt.style.use("ggplot")
 sns.set_palette("husl")
@@ -178,6 +181,52 @@ def load_signings(path):
     signings["signed_date"] = pd.to_datetime(signings["signed_date"], utc=True, errors="coerce")
     signings["price"] = pd.to_numeric(signings["price"], errors="coerce")
     return signings.dropna(subset=["buyer"])
+
+
+def load_previous_players(season):
+    path = PREVIOUS_PLAYER_FILES.get(season)
+    if not path or not path.exists():
+        return pd.DataFrame(columns=["prev_player_id", "prev_name_norm", "prev_points", "prev_average"])
+
+    previous = pd.read_csv(path)
+    average_column = "average.average" if "average.average" in previous.columns else "average"
+    required = {"id", "name", "points", average_column}
+    if not required.issubset(previous.columns):
+        return pd.DataFrame(columns=["prev_player_id", "prev_name_norm", "prev_points", "prev_average"])
+
+    previous = previous.copy()
+    previous["prev_player_id"] = previous["id"]
+    previous["prev_name_norm"] = previous["name"].map(normalize_name)
+    previous["prev_points"] = pd.to_numeric(previous["points"], errors="coerce")
+    previous["prev_average"] = pd.to_numeric(previous[average_column], errors="coerce")
+    return previous[["prev_player_id", "prev_name_norm", "prev_points", "prev_average"]].drop_duplicates(
+        subset=["prev_player_id"], keep="last"
+    )
+
+
+def enrich_market_with_previous_season(current_market, previous_players):
+    market = current_market.copy()
+    market["prev_points"] = pd.NA
+    market["prev_average"] = pd.NA
+    if market.empty or previous_players.empty:
+        return market
+
+    by_id = previous_players.set_index("prev_player_id")
+    by_name = previous_players.drop_duplicates(subset=["prev_name_norm"], keep="last").set_index("prev_name_norm")
+    for index, row in market.iterrows():
+        prev_row = None
+        player_id = row.get("player_id")
+        if player_id in by_id.index:
+            prev_row = by_id.loc[player_id]
+        else:
+            name_norm = normalize_name(row.get("name"))
+            if name_norm in by_name.index:
+                prev_row = by_name.loc[name_norm]
+        if prev_row is None:
+            continue
+        market.at[index, "prev_points"] = prev_row.get("prev_points")
+        market.at[index, "prev_average"] = prev_row.get("prev_average")
+    return market
 
 
 def analyze_conversion(market, signings, chart_path):
@@ -459,6 +508,7 @@ def generate_html(
     current_market,
     chart_filename,
     show_lineup_columns=False,
+    show_previous_columns=False,
 ):
     buyer_rows = ""
     if buyer_stats.empty:
@@ -495,6 +545,8 @@ def generate_html(
 
     market_rows = ""
     market_colspan = 11 if show_lineup_columns else 7
+    if show_previous_columns:
+        market_colspan += 2
     if current_market.empty:
         market_rows = table_empty(market_colspan, "Sin jugadores de mercado para esta temporada.")
     else:
@@ -503,6 +555,16 @@ def generate_html(
             avg_str = f"{row['average']:.1f}" if pd.notna(row["average"]) else "-"
             price_str = format_money(row["price"]) if pd.notna(row["price"]) else "-"
             points_str = f"{int(row['points'])}" if pd.notna(row["points"]) else "-"
+            previous_cells = ""
+            if show_previous_columns:
+                prev_points = f"{row['prev_points']:.1f}" if pd.notna(row.get("prev_points")) else "-"
+                prev_average = f"{row['prev_average']:.1f}" if pd.notna(row.get("prev_average")) else "-"
+                prev_points_sort = row["prev_points"] if pd.notna(row.get("prev_points")) else -1
+                prev_average_sort = row["prev_average"] if pd.notna(row.get("prev_average")) else -1
+                previous_cells = f"""
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{prev_points_sort}">{prev_points}</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{prev_average_sort}">{prev_average}</td>
+                """.strip()
             lineup_cells = ""
             if show_lineup_columns:
                 ff_prob = f"{int(row['ff_probability'])}%" if row.get("ff_probability") != "" and pd.notna(row.get("ff_probability")) else "-"
@@ -526,6 +588,7 @@ def generate_html(
                 <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="{price_sort}">{price_str}</td>
                 <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{avg_sort}">{avg_str}</td>
                 <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{points_sort}">{points_str}</td>
+{previous_cells}
 {lineup_cells}
                 <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="{exp_sort}">{exp_str}</td>
             </tr>
@@ -533,6 +596,9 @@ def generate_html(
     lineup_headers = ""
     if show_lineup_columns:
         lineup_headers = '<th class="py-2 px-3" data-sort-type="text">Estado FF</th><th class="py-2 px-3 text-center" data-sort-type="number">Prob.</th><th class="py-2 px-3" data-sort-type="text">Partido</th><th class="py-2 px-3" data-sort-type="text">Consejo</th>'
+    previous_headers = ""
+    if show_previous_columns:
+        previous_headers = '<th class="py-2 px-3 text-center" data-sort-type="number">Pts 25-26</th><th class="py-2 px-3 text-center" data-sort-type="number">Prom. 25-26</th>'
 
     selector_options = render_season_selector(seasons, season)
     nav_links = render_nav_links(season, "market")
@@ -634,7 +700,7 @@ def generate_html(
             <div class="mt-4 overflow-x-auto">
                 <table id="current-market-table" class="min-w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                        <tr><th class="py-2 px-3" data-sort-type="text">Jugador</th><th class="py-2 px-3" data-sort-type="text">Equipo</th><th class="py-2 px-3" data-sort-type="text">Posición</th><th class="py-2 px-3" data-sort-type="number">Precio</th><th class="py-2 px-3 text-center" data-sort-type="number">Promedio</th><th class="py-2 px-3 text-center" data-sort-type="number">Puntos</th>{lineup_headers}<th class="py-2 px-3" data-sort-type="number">Expira</th></tr>
+                        <tr><th class="py-2 px-3" data-sort-type="text">Jugador</th><th class="py-2 px-3" data-sort-type="text">Equipo</th><th class="py-2 px-3" data-sort-type="text">Posición</th><th class="py-2 px-3" data-sort-type="number">Precio</th><th class="py-2 px-3 text-center" data-sort-type="number">Promedio</th><th class="py-2 px-3 text-center" data-sort-type="number">Puntos</th>{previous_headers}{lineup_headers}<th class="py-2 px-3" data-sort-type="number">Expira</th></tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">{market_rows}</tbody>
                 </table>
@@ -703,6 +769,8 @@ def build_market_dashboard(exports_dir, output, season, seasons):
     else:
         top_signings = matched_signings.sort_values("price_s", ascending=False).head(10)
     current_market = get_current_market(market)
+    previous_players = load_previous_players(season)
+    current_market = enrich_market_with_previous_season(current_market, previous_players)
     lineup_rows = load_lineup_rows(exports_dir, season)
     current_market = enrich_market_with_lineups(current_market, lineup_rows, overrides=load_matching_overrides())
     html = generate_html(
@@ -716,6 +784,7 @@ def build_market_dashboard(exports_dir, output, season, seasons):
         current_market,
         chart_filename,
         show_lineup_columns=bool(lineup_rows),
+        show_previous_columns=not previous_players.empty,
     )
     html = "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
     output.write_text(html, encoding="utf-8")
