@@ -23,7 +23,7 @@
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-wide text-indigo-700">Futmondo PALETOS · 2024-2025</p>
                     <h1 class="mt-2 text-3xl font-extrabold text-gray-950 sm:text-4xl">Mercado</h1>
-                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 10:38</p>
+                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 11:01</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:items-end">
                     <label class="text-xs font-bold uppercase text-gray-500" for="season-select">Temporada</label>
@@ -47,6 +47,7 @@
             <div class="bg-white p-5 shadow-sm border-l-4 border-indigo-500">
                 <p class="text-xs font-bold uppercase text-gray-500">Tasa de Conversión</p>
                 <p class="mt-2 text-3xl font-extrabold">0.00%</p>
+                <p class="mt-2 text-xs leading-5 text-gray-600">Fichajes comprados a la máquina que se pueden cruzar con una oferta diaria, dividido entre el total de ofertas de la máquina analizadas.</p>
             </div>
             <div class="bg-white p-5 shadow-sm border-l-4 border-blue-500">
                 <p class="text-xs font-bold uppercase text-gray-500">Ofertas Analizadas</p>
@@ -60,7 +61,7 @@
 
         <section class="mt-8 bg-white p-5 shadow-sm">
             <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
-            <p class="mt-1 text-sm text-gray-600">Compara las ofertas nuevas publicadas por la máquina cada día con los fichajes cerrados ese mismo día. El cruce usa la ventana real de subasta, desde creación hasta expiración con un pequeño margen por el cierre de Futmondo.</p>
+            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. Es actividad real del pressroom, no ofertas publicadas.</p>
             <div class="mt-4 flex justify-center">
                 <img src="assets/conversion_chart_2024_2025.png" alt="Gráfico de conversión" class="max-w-full">
             </div>
@@ -69,13 +70,13 @@
         <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div class="bg-white p-5 shadow-sm">
                 <h2 class="text-xl font-bold text-indigo-700">Comportamiento de los Compradores</h2>
-                <p class="mt-1 text-sm text-gray-600">Resume todos los fichajes de la temporada que se han podido cruzar con una oferta de la máquina. La sobrepuja media mide cuánto pagó cada comprador por encima o por debajo del precio de salida.</p>
+                <p class="mt-1 text-sm text-gray-600">Incluye todos los fichajes con comprador desde que hay pressroom esta temporada. Si existe oferta diaria se usa su precio; si no existe, la sobrepuja se aproxima contra el valor actual del jugador. Gasto suma compras e ingresos suma ventas a la máquina.</p>
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full text-left text-sm">
                         <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                            <tr><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-center">Fichajes</th><th class="py-3 px-4 text-right">Sobrepuja Media</th></tr>
+                            <tr><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-center">Fichajes</th><th class="py-3 px-4 text-right">Gasto</th><th class="py-3 px-4 text-right">Ingresos</th><th class="py-3 px-4 text-right">Sobrepuja Media</th></tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="3">Sin cruces suficientes entre mercado y fichajes.</td></tr></tbody>
+                        <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="5">Sin fichajes registrados para calcular comportamiento.</td></tr></tbody>
                     </table>
                 </div>
             </div>

@@ -29,11 +29,11 @@ def format_points(value):
 
 
 def format_money(value):
-    return f"{format_int(value)} €"
+    return f"{float(value) / 1_000_000:.1f} M€"
 
 
 def format_money_compact(value):
-    return f"{format_int(value / 1_000_000)} M€"
+    return f"{float(value) / 1_000_000:.1f} M€"
 
 
 def esc(value):

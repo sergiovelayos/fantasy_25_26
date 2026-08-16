@@ -21,7 +21,7 @@ ASSETS_DIR = Path("docs/assets")
 MATCHING_OVERRIDES_FILE = Path("config/player_name_overrides.json")
 LOCAL_TZ = ZoneInfo("Europe/Madrid")
 PREVIOUS_PLAYER_FILES = {
-    "2026_2027": Path("data/jugadores_futmondo/championshipplayers_liga_25_26.csv"),
+    "2026_2027": LEGACY_MARKET_FILE,
 }
 
 plt.style.use("ggplot")
@@ -53,7 +53,9 @@ def format_int(value):
 
 
 def format_money(value):
-    return f"{format_int(value)} €"
+    if pd.isna(value):
+        return "-"
+    return f"{value / 1_000_000:.1f} M€"
 
 
 def format_delta_money(value):
@@ -159,18 +161,20 @@ def load_market(path):
 
 def load_signings(path):
     if not path:
-        return pd.DataFrame(columns=["player_id", "player_name", "buyer", "price", "signed_date"])
+        return pd.DataFrame(columns=["player_id", "player_name", "buyer", "seller", "price", "signed_date"])
 
     raw = json.load(path.open(encoding="utf-8"))
     rows = []
     for item in raw.get("answer", {}).get("news", []):
         buyer = item.get("_buyer") or {}
+        seller = item.get("_seller") or {}
         player = item.get("_player") or {}
         rows.append(
             {
                 "player_id": player.get("_id"),
                 "player_name": player.get("name"),
                 "buyer": buyer.get("name"),
+                "seller": seller.get("name"),
                 "price": item.get("price"),
                 "signed_date": item.get("created"),
             }
@@ -180,7 +184,7 @@ def load_signings(path):
         return signings
     signings["signed_date"] = pd.to_datetime(signings["signed_date"], utc=True, errors="coerce")
     signings["price"] = pd.to_numeric(signings["price"], errors="coerce")
-    return signings.dropna(subset=["buyer"])
+    return signings
 
 
 def load_previous_players(season):
@@ -188,20 +192,59 @@ def load_previous_players(season):
     if not path or not path.exists():
         return pd.DataFrame(columns=["prev_player_id", "prev_name_norm", "prev_points", "prev_average"])
 
-    previous = pd.read_csv(path)
-    average_column = "average.average" if "average.average" in previous.columns else "average"
-    required = {"id", "name", "points", average_column}
-    if not required.issubset(previous.columns):
+    rows = []
+    if path.suffix == ".csv":
+        previous = pd.read_csv(path)
+        average_column = "average.average" if "average.average" in previous.columns else "average"
+        matches_column = "average.matches" if "average.matches" in previous.columns else None
+        required = {"id", "name", "points", average_column}
+        if not required.issubset(previous.columns):
+            return pd.DataFrame(columns=["prev_player_id", "prev_name_norm", "prev_points", "prev_average"])
+        for _, player in previous.iterrows():
+            rows.append(
+                {
+                    "prev_player_id": player.get("id"),
+                    "prev_name_norm": normalize_name(player.get("name")),
+                    "prev_points": player.get("points"),
+                    "prev_matches": player.get(matches_column) if matches_column else pd.NA,
+                    "prev_average_raw": player.get(average_column),
+                }
+            )
+    else:
+        raw = json.load(path.open(encoding="utf-8"))
+        for entry in raw:
+            players = entry.get("jugadores") if isinstance(entry, dict) else None
+            if players is None:
+                players = [entry]
+            for player in players:
+                if not isinstance(player, dict):
+                    continue
+                average = player.get("average") or {}
+                rows.append(
+                    {
+                        "prev_player_id": player.get("id"),
+                        "prev_name_norm": normalize_name(player.get("name")),
+                        "prev_points": player.get("points"),
+                        "prev_matches": average.get("matches") if isinstance(average, dict) else pd.NA,
+                        "prev_average_raw": average.get("average") if isinstance(average, dict) else average,
+                    }
+                )
+
+    previous = pd.DataFrame(rows)
+    if previous.empty:
         return pd.DataFrame(columns=["prev_player_id", "prev_name_norm", "prev_points", "prev_average"])
 
-    previous = previous.copy()
-    previous["prev_player_id"] = previous["id"]
-    previous["prev_name_norm"] = previous["name"].map(normalize_name)
-    previous["prev_points"] = pd.to_numeric(previous["points"], errors="coerce")
-    previous["prev_average"] = pd.to_numeric(previous[average_column], errors="coerce")
-    return previous[["prev_player_id", "prev_name_norm", "prev_points", "prev_average"]].drop_duplicates(
-        subset=["prev_player_id"], keep="last"
-    )
+    previous["prev_points"] = pd.to_numeric(previous["prev_points"], errors="coerce")
+    previous["prev_matches"] = pd.to_numeric(previous["prev_matches"], errors="coerce")
+    previous["prev_average_raw"] = pd.to_numeric(previous["prev_average_raw"], errors="coerce")
+    previous = previous.dropna(subset=["prev_player_id", "prev_points"])
+    previous = previous.sort_values(["prev_player_id", "prev_points", "prev_matches"], ascending=[True, False, False])
+    previous = previous.drop_duplicates(subset=["prev_player_id"], keep="first").copy()
+    previous["prev_average"] = previous["prev_points"] / previous["prev_matches"]
+    previous.loc[previous["prev_matches"].isna() | (previous["prev_matches"] <= 0), "prev_average"] = previous[
+        "prev_average_raw"
+    ]
+    return previous[["prev_player_id", "prev_name_norm", "prev_points", "prev_average"]]
 
 
 def enrich_market_with_previous_season(current_market, previous_players):
@@ -229,9 +272,8 @@ def enrich_market_with_previous_season(current_market, previous_players):
     return market
 
 
-def analyze_conversion(market, signings, chart_path):
+def analyze_conversion(market, signings):
     if market.empty:
-        make_empty_chart(chart_path, "Sin datos de mercado")
         return 0, 0, 0
 
     offers = unique_market_offers(market)
@@ -240,30 +282,35 @@ def analyze_conversion(market, signings, chart_path):
     total_offers = len(offers)
     total_sales = len(matched_sales)
     rate = (total_sales / total_offers) * 100 if total_offers else 0
+    return rate, total_offers, total_sales
 
-    offers = offers.copy()
-    offers["date"] = offers["creation_date"].dt.date
-    daily_market = offers.groupby("date").size().rename("Ofertas")
-    if matched_sales.empty:
-        daily_sales = pd.Series(dtype="float64", name="Ventas")
-    else:
-        matched_sales = matched_sales.copy()
-        matched_sales["date"] = matched_sales["signed_date"].dt.date
-        daily_sales = matched_sales.groupby("date").size().rename("Ventas")
 
-    stats = pd.concat([daily_market, daily_sales], axis=1).fillna(0).tail(15)
+def build_activity_chart(signings, chart_path):
+    if signings.empty:
+        make_empty_chart(chart_path, "Sin movimientos de mercado")
+        return
+
+    movements = signings.dropna(subset=["signed_date"]).copy()
+    movements = movements[(movements["buyer"].notna()) | (movements["seller"].notna())].copy()
+    if movements.empty:
+        make_empty_chart(chart_path, "Sin movimientos de mercado")
+        return
+
+    movements["date"] = movements["signed_date"].dt.date
+    daily_movements = movements.groupby("date").size().tail(30)
+
     plt.figure(figsize=(10, 5))
-    ax = stats["Ofertas"].plot(kind="bar", color="#3498db", alpha=0.7, label="Jugadores en Mercado")
-    stats["Ventas"].plot(kind="bar", color="#2ecc71", ax=ax, label="Fichados")
-    plt.title("Actividad del Mercado")
-    plt.ylabel("Cantidad de jugadores")
+    ax = daily_movements.plot(kind="line", marker="o", color="#4f46e5", linewidth=2.5)
+    ax.fill_between(range(len(daily_movements)), daily_movements.values, alpha=0.12, color="#4f46e5")
+    ax.set_xticks(range(len(daily_movements)))
+    ax.set_xticklabels([date.strftime("%d/%m") for date in daily_movements.index], rotation=45)
+    plt.title("Fichajes diarios")
+    plt.ylabel("Movimientos")
     plt.xlabel("Fecha")
-    plt.legend()
-    plt.xticks(rotation=45)
+    plt.grid(True, alpha=0.25)
     plt.tight_layout()
     plt.savefig(chart_path)
     plt.close()
-    return rate, total_offers, total_sales
 
 
 def make_empty_chart(chart_path, title):
@@ -275,15 +322,24 @@ def make_empty_chart(chart_path, title):
     plt.close()
 
 
-def analyze_overbids(market, signings):
-    matched = match_signings_to_market(market, signings)
+def analyze_overbids(market, signings, current_values=None):
+    matched = match_signings_to_market(market, signings, current_values=current_values, include_fallback=True)
     if matched.empty:
-        return pd.DataFrame(columns=["buyer", "count", "avg_overbid"])
-    return (
+        return pd.DataFrame(columns=["buyer", "count", "avg_overbid", "spend", "income"])
+
+    buyer_stats = (
         matched.groupby("buyer", as_index=False)
-        .agg(count=("player_id", "count"), avg_overbid=("overbid_pct", "mean"))
+        .agg(count=("player_id", "count"), avg_overbid=("overbid_pct", "mean"), spend=("price_s", "sum"))
         .sort_values("avg_overbid", ascending=False)
     )
+    sales = signings.dropna(subset=["seller"]).copy()
+    if sales.empty:
+        buyer_stats["income"] = 0
+        return buyer_stats
+    income = sales.groupby("seller", as_index=False).agg(income=("price", "sum")).rename(columns={"seller": "buyer"})
+    buyer_stats = buyer_stats.merge(income, on="buyer", how="left")
+    buyer_stats["income"] = buyer_stats["income"].fillna(0)
+    return buyer_stats
 
 
 def unique_market_offers(market):
@@ -298,20 +354,42 @@ def unique_market_offers(market):
     )
 
 
-def match_signings_to_market(market, signings):
+def match_signings_to_market(market, signings, current_values=None, include_fallback=False):
     if market.empty or signings.empty:
         return pd.DataFrame(
-            columns=["buyer", "player_id", "player_name", "price_s", "market_price", "overbid", "overbid_pct", "signed_date"]
+            columns=[
+                "buyer",
+                "player_id",
+                "player_name",
+                "price_s",
+                "market_price",
+                "overbid",
+                "overbid_pct",
+                "signed_date",
+                "price_source",
+            ]
         )
 
     market_comp = unique_market_offers(market)
     if market_comp.empty:
         return pd.DataFrame(
-            columns=["buyer", "player_id", "player_name", "price_s", "market_price", "overbid", "overbid_pct", "signed_date"]
+            columns=[
+                "buyer",
+                "player_id",
+                "player_name",
+                "price_s",
+                "market_price",
+                "overbid",
+                "overbid_pct",
+                "signed_date",
+                "price_source",
+            ]
         )
 
     market_comp = market_comp.rename(columns={"price": "price_m"}).sort_values("creation_date")
-    signed = signings.rename(columns={"price": "price_s"}).dropna(subset=["player_id", "signed_date", "price_s"])
+    signed = signings.dropna(subset=["buyer"]).rename(columns={"price": "price_s"}).dropna(
+        subset=["player_id", "signed_date", "price_s"]
+    )
     signed = signed.sort_values("signed_date")
 
     merged = signed.merge(market_comp, on="player_id", how="left", suffixes=("_s", "_m"))
@@ -326,13 +404,35 @@ def match_signings_to_market(market, signings):
         .copy()
     )
     matched = merged.dropna(subset=["price_m"]).copy()
+    matched["market_price"] = matched["price_m"]
+    matched["price_source"] = "mercado"
+
+    if include_fallback:
+        matched_keys = set(zip(matched.get("player_id", pd.Series(dtype=object)), matched.get("signed_date", pd.Series(dtype=object))))
+        missing = signed[~signed.apply(lambda row: (row["player_id"], row["signed_date"]) in matched_keys, axis=1)].copy()
+        if current_values is not None and not current_values.empty and not missing.empty:
+            missing = missing.merge(current_values, on="player_id", how="left")
+            missing = missing.dropna(subset=["current_value"]).copy()
+            missing["market_price"] = missing["current_value"]
+            missing["price_source"] = "valor actual"
+            matched = pd.concat([matched, missing], ignore_index=True, sort=False)
+
     if matched.empty:
         return pd.DataFrame(
-            columns=["buyer", "player_id", "player_name", "price_s", "market_price", "overbid", "overbid_pct", "signed_date"]
+            columns=[
+                "buyer",
+                "player_id",
+                "player_name",
+                "price_s",
+                "market_price",
+                "overbid",
+                "overbid_pct",
+                "signed_date",
+                "price_source",
+            ]
         )
-    matched["market_price"] = matched["price_m"]
     matched["overbid"] = matched["price_s"] - matched["market_price"]
-    matched["overbid_pct"] = ((matched["price_s"] - matched["price_m"]) / matched["price_m"]) * 100
+    matched["overbid_pct"] = (matched["overbid"] / matched["market_price"]) * 100
     return matched
 
 
@@ -381,6 +481,27 @@ def load_lineup_rows(exports_dir, season):
     raw = json.load(path.open(encoding="utf-8"))
     rows = raw.get("players", [])
     return rows if isinstance(rows, list) else []
+
+
+def load_current_player_values(exports_dir, season):
+    lineup_dir = exports_dir / season / "lineup_assistant"
+    path = latest_file(lineup_dir, "championshipplayers_*.json") if lineup_dir.exists() else None
+    if not path:
+        return pd.DataFrame(columns=["player_id", "current_value"])
+    raw = json.load(path.open(encoding="utf-8"))
+    rows = []
+    for player in raw.get("answer", {}).get("players", []):
+        rows.append(
+            {
+                "player_id": player.get("id"),
+                "current_value": player.get("value"),
+            }
+        )
+    values = pd.DataFrame(rows)
+    if values.empty:
+        return values
+    values["current_value"] = pd.to_numeric(values["current_value"], errors="coerce")
+    return values.dropna(subset=["player_id", "current_value"]).drop_duplicates(subset=["player_id"], keep="last")
 
 
 def load_matching_overrides(path=MATCHING_OVERRIDES_FILE):
@@ -512,7 +633,7 @@ def generate_html(
 ):
     buyer_rows = ""
     if buyer_stats.empty:
-        buyer_rows = table_empty(3, "Sin cruces suficientes entre mercado y fichajes.")
+        buyer_rows = table_empty(5, "Sin fichajes registrados para calcular comportamiento.")
     else:
         for _, row in buyer_stats.iterrows():
             tone = "text-green-600" if row["avg_overbid"] > 0 else "text-red-600"
@@ -520,6 +641,8 @@ def generate_html(
             <tr>
                 <td class="py-3 px-4 font-medium">{esc(row['buyer'])}</td>
                 <td class="py-3 px-4 text-center tabular-nums">{int(row['count'])}</td>
+                <td class="py-3 px-4 text-right tabular-nums">{format_money(row['spend'])}</td>
+                <td class="py-3 px-4 text-right tabular-nums">{format_money(row['income'])}</td>
                 <td class="py-3 px-4 text-right font-bold tabular-nums {tone}">{row['avg_overbid']:+.2f}%</td>
             </tr>
             """
@@ -648,6 +771,7 @@ def generate_html(
             <div class="bg-white p-5 shadow-sm border-l-4 border-indigo-500">
                 <p class="text-xs font-bold uppercase text-gray-500">Tasa de Conversión</p>
                 <p class="mt-2 text-3xl font-extrabold">{conversion_rate:.2f}%</p>
+                <p class="mt-2 text-xs leading-5 text-gray-600">Fichajes comprados a la máquina que se pueden cruzar con una oferta diaria, dividido entre el total de ofertas de la máquina analizadas.</p>
             </div>
             <div class="bg-white p-5 shadow-sm border-l-4 border-blue-500">
                 <p class="text-xs font-bold uppercase text-gray-500">Ofertas Analizadas</p>
@@ -661,7 +785,7 @@ def generate_html(
 
         <section class="mt-8 bg-white p-5 shadow-sm">
             <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
-            <p class="mt-1 text-sm text-gray-600">Compara las ofertas nuevas publicadas por la máquina cada día con los fichajes cerrados ese mismo día. El cruce usa la ventana real de subasta, desde creación hasta expiración con un pequeño margen por el cierre de Futmondo.</p>
+            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. Es actividad real del pressroom, no ofertas publicadas.</p>
             <div class="mt-4 flex justify-center">
                 <img src="assets/{chart_filename}" alt="Gráfico de conversión" class="max-w-full">
             </div>
@@ -670,11 +794,11 @@ def generate_html(
         <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div class="bg-white p-5 shadow-sm">
                 <h2 class="text-xl font-bold text-indigo-700">Comportamiento de los Compradores</h2>
-                <p class="mt-1 text-sm text-gray-600">Resume todos los fichajes de la temporada que se han podido cruzar con una oferta de la máquina. La sobrepuja media mide cuánto pagó cada comprador por encima o por debajo del precio de salida.</p>
+                <p class="mt-1 text-sm text-gray-600">Incluye todos los fichajes con comprador desde que hay pressroom esta temporada. Si existe oferta diaria se usa su precio; si no existe, la sobrepuja se aproxima contra el valor actual del jugador. Gasto suma compras e ingresos suma ventas a la máquina.</p>
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full text-left text-sm">
                         <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                            <tr><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-center">Fichajes</th><th class="py-3 px-4 text-right">Sobrepuja Media</th></tr>
+                            <tr><th class="py-3 px-4">Comprador</th><th class="py-3 px-4 text-center">Fichajes</th><th class="py-3 px-4 text-right">Gasto</th><th class="py-3 px-4 text-right">Ingresos</th><th class="py-3 px-4 text-right">Sobrepuja Media</th></tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">{buyer_rows}</tbody>
                     </table>
@@ -759,9 +883,11 @@ def build_market_dashboard(exports_dir, output, season, seasons):
     signings = load_signings(signings_path)
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     chart_filename = f"conversion_chart_{season}.png"
-    conversion_rate, offers, converted_sales = analyze_conversion(market, signings, ASSETS_DIR / chart_filename)
-    buyer_stats = analyze_overbids(market, signings)
-    matched_signings = match_signings_to_market(market, signings)
+    conversion_rate, offers, converted_sales = analyze_conversion(market, signings)
+    build_activity_chart(signings, ASSETS_DIR / chart_filename)
+    current_values = load_current_player_values(exports_dir, season)
+    buyer_stats = analyze_overbids(market, signings, current_values=current_values)
+    matched_signings = match_signings_to_market(market, signings, current_values=current_values, include_fallback=True)
     if matched_signings.empty:
         top_signings = pd.DataFrame(
             columns=["player_name", "buyer", "price_s", "overbid", "overbid_pct", "signed_date"]
@@ -778,7 +904,7 @@ def build_market_dashboard(exports_dir, output, season, seasons):
         seasons,
         conversion_rate,
         offers,
-        len(signings),
+        int(signings["buyer"].notna().sum()) if not signings.empty else 0,
         buyer_stats,
         top_signings,
         current_market,
