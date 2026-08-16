@@ -853,7 +853,7 @@ def generate_html(
 
         <section class="mt-8 bg-white p-5 shadow-sm">
             <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
-            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. La segunda línea suma el importe comprado por equipos humanos ese día.</p>
+            <p class="mt-1 text-sm text-gray-600">Muestra los últimos 30 días con movimientos registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. La segunda línea suma el importe comprado por equipos humanos ese día.</p>
             <div class="mt-4 flex justify-center">
                 <img src="assets/{chart_filename}" alt="Gráfico de actividad diaria" class="max-w-full">
             </div>
