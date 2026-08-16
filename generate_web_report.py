@@ -298,11 +298,13 @@ def build_activity_chart(signings, chart_path):
 
     movements["date"] = movements["signed_date"].dt.date
     daily_movements = movements.groupby("date").size().tail(30)
+    x_positions = list(range(len(daily_movements)))
 
     plt.figure(figsize=(10, 5))
-    ax = daily_movements.plot(kind="line", marker="o", color="#4f46e5", linewidth=2.5)
-    ax.fill_between(range(len(daily_movements)), daily_movements.values, alpha=0.12, color="#4f46e5")
-    ax.set_xticks(range(len(daily_movements)))
+    ax = plt.gca()
+    ax.plot(x_positions, daily_movements.values, marker="o", color="#4f46e5", linewidth=2.5)
+    ax.fill_between(x_positions, daily_movements.values, alpha=0.12, color="#4f46e5")
+    ax.set_xticks(x_positions)
     ax.set_xticklabels([date.strftime("%d/%m") for date in daily_movements.index], rotation=45)
     plt.title("Fichajes diarios")
     plt.ylabel("Movimientos")
@@ -783,14 +785,6 @@ def generate_html(
             </div>
         </section>
 
-        <section class="mt-8 bg-white p-5 shadow-sm">
-            <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
-            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. Es actividad real del pressroom, no ofertas publicadas.</p>
-            <div class="mt-4 flex justify-center">
-                <img src="assets/{chart_filename}" alt="Gráfico de conversión" class="max-w-full">
-            </div>
-        </section>
-
         <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div class="bg-white p-5 shadow-sm">
                 <h2 class="text-xl font-bold text-indigo-700">Comportamiento de los Compradores</h2>
@@ -828,6 +822,14 @@ def generate_html(
                     </thead>
                     <tbody class="divide-y divide-gray-100">{market_rows}</tbody>
                 </table>
+            </div>
+        </section>
+
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
+            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. Es actividad real del pressroom, no ofertas publicadas.</p>
+            <div class="mt-4 flex justify-center">
+                <img src="assets/{chart_filename}" alt="Gráfico de actividad diaria" class="max-w-full">
             </div>
         </section>
     </main>
