@@ -9,6 +9,7 @@ from difflib import SequenceMatcher
 from zoneinfo import ZoneInfo
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 import pandas as pd
 import seaborn as sns
 
@@ -297,19 +298,44 @@ def build_activity_chart(signings, chart_path):
         return
 
     movements["date"] = movements["signed_date"].dt.date
-    daily_movements = movements.groupby("date").size().tail(30)
-    x_positions = list(range(len(daily_movements)))
+    daily = (
+        movements.groupby("date")
+        .agg(
+            movements=("player_id", "size"),
+            bought_total=("price", lambda values: values[movements.loc[values.index, "buyer"].notna()].sum()),
+        )
+        .tail(30)
+    )
+    x_positions = list(range(len(daily)))
 
     plt.figure(figsize=(10, 5))
     ax = plt.gca()
-    ax.plot(x_positions, daily_movements.values, marker="o", color="#4f46e5", linewidth=2.5)
-    ax.fill_between(x_positions, daily_movements.values, alpha=0.12, color="#4f46e5")
+    ax.plot(x_positions, daily["movements"].values, marker="o", color="#4f46e5", linewidth=2.5, label="Movimientos")
+    ax.fill_between(x_positions, daily["movements"].values, alpha=0.12, color="#4f46e5")
     ax.set_xticks(x_positions)
-    ax.set_xticklabels([date.strftime("%d/%m") for date in daily_movements.index], rotation=45)
-    plt.title("Fichajes diarios")
-    plt.ylabel("Movimientos")
-    plt.xlabel("Fecha")
-    plt.grid(True, alpha=0.25)
+    ax.set_xticklabels([date.strftime("%d/%m") for date in daily.index], rotation=45)
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.set_ylim(bottom=0)
+    ax.set_ylabel("Movimientos")
+    ax.set_xlabel("Fecha")
+
+    ax2 = ax.twinx()
+    ax2.plot(
+        x_positions,
+        daily["bought_total"].values,
+        marker="s",
+        color="#16a34a",
+        linewidth=2.2,
+        label="Total comprado",
+    )
+    ax2.set_ylim(bottom=0)
+    ax2.set_ylabel("Total comprado")
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{value / 1_000_000:.0f} M€"))
+
+    lines = ax.get_lines() + ax2.get_lines()
+    ax.legend(lines, [line.get_label() for line in lines], loc="upper left")
+    plt.title("Fichajes diarios e importe comprado")
+    ax.grid(True, alpha=0.25)
     plt.tight_layout()
     plt.savefig(chart_path)
     plt.close()
@@ -827,7 +853,7 @@ def generate_html(
 
         <section class="mt-8 bg-white p-5 shadow-sm">
             <h2 class="text-xl font-bold">Actividad Diaria del Mercado</h2>
-            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. Es actividad real del pressroom, no ofertas publicadas.</p>
+            <p class="mt-1 text-sm text-gray-600">Cuenta los movimientos diarios registrados en prensa: compras de jugadores humanos y ventas de jugadores humanos a la máquina. La segunda línea suma el importe comprado por equipos humanos ese día.</p>
             <div class="mt-4 flex justify-center">
                 <img src="assets/{chart_filename}" alt="Gráfico de actividad diaria" class="max-w-full">
             </div>
