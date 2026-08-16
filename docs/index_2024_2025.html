@@ -10,6 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
+        th[data-sort-type] { cursor: pointer; user-select: none; white-space: nowrap; }
+        th[data-sort-type]::after { content: "↕"; margin-left: 0.35rem; color: #9ca3af; font-size: 0.75rem; }
+        th[data-sort-dir="asc"]::after { content: "↑"; color: #4338ca; }
+        th[data-sort-dir="desc"]::after { content: "↓"; color: #4338ca; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -19,7 +23,7 @@
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-wide text-indigo-700">Futmondo PALETOS · 2024-2025</p>
                     <h1 class="mt-2 text-3xl font-extrabold text-gray-950 sm:text-4xl">Mercado</h1>
-                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 10:35</p>
+                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 10:36</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:items-end">
                     <label class="text-xs font-bold uppercase text-gray-500" for="season-select">Temporada</label>
@@ -93,11 +97,11 @@
             <h2 class="text-xl font-bold">Mercado Actual (0 jugadores)</h2>
             <p class="mt-1 text-sm text-gray-600">Muestra todos los jugadores que siguen en el último snapshot del mercado y que vende la máquina, ordenados por plazo de compra más cercano y, en empate, por precio más alto. El partido mostrado es útil solo si el fichaje se puede cerrar antes del inicio de ese partido; si no, se marca como pendiente de la siguiente jornada.</p>
             <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
+                <table id="current-market-table" class="min-w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                        <tr><th class="py-2 px-3">Jugador</th><th class="py-2 px-3">Equipo</th><th class="py-2 px-3">Precio</th><th class="py-2 px-3 text-center">Promedio</th><th class="py-2 px-3 text-center">Puntos</th><th class="py-2 px-3">Expira</th></tr>
+                        <tr><th class="py-2 px-3" data-sort-type="text">Jugador</th><th class="py-2 px-3" data-sort-type="text">Equipo</th><th class="py-2 px-3" data-sort-type="text">Posición</th><th class="py-2 px-3" data-sort-type="number">Precio</th><th class="py-2 px-3 text-center" data-sort-type="number">Promedio</th><th class="py-2 px-3 text-center" data-sort-type="number">Puntos</th><th class="py-2 px-3" data-sort-type="number">Expira</th></tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="6">Sin jugadores de mercado para esta temporada.</td></tr></tbody>
+                    <tbody class="divide-y divide-gray-100"><tr><td class="py-3 px-4 text-gray-500" colspan="7">Sin jugadores de mercado para esta temporada.</td></tr></tbody>
                 </table>
             </div>
         </section>
@@ -111,6 +115,37 @@
             }
         }
         document.getElementById("season-select").addEventListener("change", function () { changeSeason(this); });
+        function cellValue(row, index, type) {
+            const cell = row.cells[index];
+            const raw = cell.dataset.sortValue || cell.textContent.trim();
+            if (type === "number") {
+                const parsed = Number(String(raw).replace(/[^0-9,.-]/g, "").replace(",", "."));
+                return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+            }
+            return raw.toLocaleLowerCase("es");
+        }
+        function sortTable(table, columnIndex, type, direction) {
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.rows);
+            rows.sort((left, right) => {
+                const leftValue = cellValue(left, columnIndex, type);
+                const rightValue = cellValue(right, columnIndex, type);
+                if (leftValue < rightValue) return direction === "asc" ? -1 : 1;
+                if (leftValue > rightValue) return direction === "asc" ? 1 : -1;
+                return 0;
+            });
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        document.querySelectorAll("#current-market-table th[data-sort-type]").forEach((header, index) => {
+            header.addEventListener("click", () => {
+                const table = header.closest("table");
+                const currentDirection = header.dataset.sortDir || "";
+                const nextDirection = currentDirection === "asc" ? "desc" : "asc";
+                table.querySelectorAll("th[data-sort-type]").forEach(cell => cell.removeAttribute("data-sort-dir"));
+                header.dataset.sortDir = nextDirection;
+                sortTable(table, index, header.dataset.sortType, nextDirection);
+            });
+        });
     </script>
 </body>
 </html>

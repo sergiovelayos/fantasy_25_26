@@ -10,6 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
+        th[data-sort-type] { cursor: pointer; user-select: none; white-space: nowrap; }
+        th[data-sort-type]::after { content: "↕"; margin-left: 0.35rem; color: #9ca3af; font-size: 0.75rem; }
+        th[data-sort-dir="asc"]::after { content: "↑"; color: #4338ca; }
+        th[data-sort-dir="desc"]::after { content: "↓"; color: #4338ca; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -19,7 +23,7 @@
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-wide text-indigo-700">Futmondo PALETOS · 2025-2026</p>
                     <h1 class="mt-2 text-3xl font-extrabold text-gray-950 sm:text-4xl">Mercado</h1>
-                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 10:35</p>
+                    <p class="mt-2 text-sm text-gray-600">Actualizado: 16/08/2026 10:36</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:items-end">
                     <label class="text-xs font-bold uppercase text-gray-500" for="season-select">Temporada</label>
@@ -225,394 +229,442 @@
             <h2 class="text-xl font-bold">Mercado Actual (48 jugadores)</h2>
             <p class="mt-1 text-sm text-gray-600">Muestra todos los jugadores que siguen en el último snapshot del mercado y que vende la máquina, ordenados por plazo de compra más cercano y, en empate, por precio más alto. El partido mostrado es útil solo si el fichaje se puede cerrar antes del inicio de ese partido; si no, se marca como pendiente de la siguiente jornada.</p>
             <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
+                <table id="current-market-table" class="min-w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                        <tr><th class="py-2 px-3">Jugador</th><th class="py-2 px-3">Equipo</th><th class="py-2 px-3">Precio</th><th class="py-2 px-3 text-center">Promedio</th><th class="py-2 px-3 text-center">Puntos</th><th class="py-2 px-3">Expira</th></tr>
+                        <tr><th class="py-2 px-3" data-sort-type="text">Jugador</th><th class="py-2 px-3" data-sort-type="text">Equipo</th><th class="py-2 px-3" data-sort-type="text">Posición</th><th class="py-2 px-3" data-sort-type="number">Precio</th><th class="py-2 px-3 text-center" data-sort-type="number">Promedio</th><th class="py-2 px-3 text-center" data-sort-type="number">Puntos</th><th class="py-2 px-3" data-sort-type="number">Expira</th></tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100"><tr>
-                <td class="py-2 px-3 font-medium">Julián Álvarez</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">73.460.027 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">7.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">218</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Julián Álvarez">Julián Álvarez</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="73460027">73.460.027 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="7.3758620689655165">7.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="218.69999999999996">218</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Fermín</td>
-                <td class="py-2 px-3 text-gray-500">Barcelona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">65.516.882 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">9.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">274</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Fermín">Fermín</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Barcelona">Barcelona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="65516882">65.516.882 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="9.136666666666667">9.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="274.09999999999997">274</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Carlos Romero</td>
-                <td class="py-2 px-3 text-gray-500">Espanyol</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">56.423.989 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">8.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">291</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Carlos Romero">Carlos Romero</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Espanyol">Espanyol</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="56423989">56.423.989 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="8.113888888888889">8.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="291.20000000000005">291</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Giuliano Simeone</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">33.142.447 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">8.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">252</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Giuliano Simeone">Giuliano Simeone</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="33142447">33.142.447 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="8.009677419354842">8.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="252.1">252</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Hugo Duro</td>
-                <td class="py-2 px-3 text-gray-500">Valencia</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">10.044.512 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.6</td>
-                <td class="py-2 px-3 text-center tabular-nums">166</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Hugo Duro">Hugo Duro</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Valencia">Valencia</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="10044512">10.044.512 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.633333333333334">4.6</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="166.7">166</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Akor Adams</td>
-                <td class="py-2 px-3 text-gray-500">Sevilla</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">7.804.739 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">170</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Akor Adams">Akor Adams</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Sevilla">Sevilla</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="7804739">7.804.739 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.35625">5.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="170.30000000000004">170</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Gabriel Suazo</td>
-                <td class="py-2 px-3 text-gray-500">Sevilla</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">2.323.598 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.5</td>
-                <td class="py-2 px-3 text-center tabular-nums">155</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Gabriel Suazo">Gabriel Suazo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Sevilla">Sevilla</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="2323598">2.323.598 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.482758620689655">5.5</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="155.5">155</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Terrats</td>
-                <td class="py-2 px-3 text-gray-500">Espanyol</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.386.554 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.7</td>
-                <td class="py-2 px-3 text-center tabular-nums">106</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Terrats">Terrats</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Espanyol">Espanyol</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1386554">1.386.554 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.6965517241379304">3.7</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="106.60000000000001">106</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">J. Cardoso</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.211.356 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.5</td>
-                <td class="py-2 px-3 text-center tabular-nums">86</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="J. Cardoso">J. Cardoso</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1211356">1.211.356 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.533333333333332">5.5</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="86.8">86</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Chidera Ejuke</td>
-                <td class="py-2 px-3 text-gray-500">Sevilla</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.145.992 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">101</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Chidera Ejuke">Chidera Ejuke</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Sevilla">Sevilla</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1145992">1.145.992 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.7629629629629626">3.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="101.89999999999999">101</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Tai Abed</td>
-                <td class="py-2 px-3 text-gray-500">Levante</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.053.569 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">2.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">14</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Tai Abed">Tai Abed</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Levante">Levante</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1053569">1.053.569 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="2.185714285714286">2.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="14.599999999999998">14</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Rahim</td>
-                <td class="py-2 px-3 text-gray-500">R. Oviedo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.017.742 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">102</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Rahim">Rahim</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="R. Oviedo">R. Oviedo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1017742">1.017.742 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.762962962962962">3.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="102.39999999999999">102</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Iván Villar</td>
-                <td class="py-2 px-3 text-gray-500">Celta de Vigo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.014.910 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">0.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">0</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Iván Villar">Iván Villar</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Celta de Vigo">Celta de Vigo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="portero">portero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1014910">1.014.910 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Van de Beek</td>
-                <td class="py-2 px-3 text-gray-500">Girona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">1.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">2</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Van de Beek">Van de Beek</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Girona">Girona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="1.1">1.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="2.2">2</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Ferrán Ruiz</td>
-                <td class="py-2 px-3 text-gray-500">Girona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">0.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">0</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Ferrán Ruiz">Ferrán Ruiz</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Girona">Girona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Matturro</td>
-                <td class="py-2 px-3 text-gray-500">Levante</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">68</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Matturro">Matturro</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Levante">Levante</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.4421052631578957">3.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="68.6">68</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Letacek</td>
-                <td class="py-2 px-3 text-gray-500">Getafe</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">0.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">0</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Letacek">Letacek</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Getafe">Getafe</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="portero">portero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Sannadi</td>
-                <td class="py-2 px-3 text-gray-500">Athletic de Bilbao</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">1.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">18</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Sannadi">Sannadi</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Athletic de Bilbao">Athletic de Bilbao</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="1.8399999999999999">1.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="18.0">18</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Iñaki Peña</td>
-                <td class="py-2 px-3 text-gray-500">Elche</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.9</td>
-                <td class="py-2 px-3 text-center tabular-nums">78</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Iñaki Peña">Iñaki Peña</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Elche">Elche</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="portero">portero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.887499999999999">4.9</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="78.2">78</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Marc Vidal</td>
-                <td class="py-2 px-3 text-gray-500">Celta de Vigo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">0.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">0</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Marc Vidal">Marc Vidal</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Celta de Vigo">Celta de Vigo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="portero">portero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.0">0</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Joan Jordan</td>
-                <td class="py-2 px-3 text-gray-500">Sevilla</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">-1.5</td>
-                <td class="py-2 px-3 text-center tabular-nums">-4</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Joan Jordan">Joan Jordan</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Sevilla">Sevilla</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="-1.5333333333333332">-1.5</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="-4.6">-4</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Lass</td>
-                <td class="py-2 px-3 text-gray-500">Girona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">1.0</td>
-                <td class="py-2 px-3 text-center tabular-nums">1</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Lass">Lass</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Girona">Girona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="1.0">1.0</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="1.0">1</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Álex Sánchez</td>
-                <td class="py-2 px-3 text-gray-500">Elche</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">4</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Álex Sánchez">Álex Sánchez</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Elche">Elche</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.4">4.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.4">4</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Dani Martínez</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">0.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">0</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Dani Martínez">Dani Martínez</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.2">0.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="0.2">0</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">27/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779853800.0">27/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Víctor Muñoz</td>
-                <td class="py-2 px-3 text-gray-500">Osasuna</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">59.795.864 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">8.7</td>
-                <td class="py-2 px-3 text-center tabular-nums">290</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Víctor Muñoz">Víctor Muñoz</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Osasuna">Osasuna</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="59795864">59.795.864 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="8.652941176470588">8.7</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="290.3">290</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Ferrán Torres </td>
-                <td class="py-2 px-3 text-gray-500">Barcelona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">53.555.721 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">7.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">237</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Ferrán Torres ">Ferrán Torres </td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Barcelona">Barcelona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="53555721">53.555.721 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="7.203030303030303">7.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="237.69999999999996">237</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Pablo Barrios</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">39.749.979 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">8.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">189</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Pablo Barrios">Pablo Barrios</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="39749979">39.749.979 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="8.07391304347826">8.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="189.8">189</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Jorge De Frutos</td>
-                <td class="py-2 px-3 text-gray-500">Rayo Vallecano</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">34.347.851 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">7.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">263</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Jorge De Frutos">Jorge De Frutos</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Rayo Vallecano">Rayo Vallecano</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="34347851">34.347.851 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="7.369444444444444">7.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="263.79999999999995">263</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Borja Iglesias</td>
-                <td class="py-2 px-3 text-gray-500">Celta de Vigo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">23.192.677 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">203</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Borja Iglesias">Borja Iglesias</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Celta de Vigo">Celta de Vigo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="23192677">23.192.677 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.808571428571428">5.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="203.2">203</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Balde</td>
-                <td class="py-2 px-3 text-gray-500">Barcelona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">20.094.707 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.3</td>
-                <td class="py-2 px-3 text-center tabular-nums">149</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Balde">Balde</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Barcelona">Barcelona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="20094707">20.094.707 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.339285714285714">5.3</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="149.49999999999997">149</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Álex Moreno</td>
-                <td class="py-2 px-3 text-gray-500">Girona</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">11.293.315 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.5</td>
-                <td class="py-2 px-3 text-center tabular-nums">170</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Álex Moreno">Álex Moreno</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Girona">Girona</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="11293315">11.293.315 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.535483870967743">5.5</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="170.79999999999998">170</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Hancko</td>
-                <td class="py-2 px-3 text-gray-500">Atlético de Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">10.798.986 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">6.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">192</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Hancko">Hancko</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Atlético de Madrid">Atlético de Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="10798986">10.798.986 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="6.223333333333333">6.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="192.5">192</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Rubén García</td>
-                <td class="py-2 px-3 text-gray-500">Osasuna</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">9.972.721 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">6.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">225</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Rubén García">Rubén García</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Osasuna">Osasuna</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="9972721">9.972.721 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="6.417142857142858">6.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="225.2">225</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Puado</td>
-                <td class="py-2 px-3 text-gray-500">Espanyol</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">7.039.673 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.9</td>
-                <td class="py-2 px-3 text-center tabular-nums">59</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Puado">Puado</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Espanyol">Espanyol</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="7039673">7.039.673 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.93">5.9</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="59.300000000000004">59</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Ilias Akhomach</td>
-                <td class="py-2 px-3 text-gray-500">Rayo Vallecano</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">4.276.092 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">106</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Ilias Akhomach">Ilias Akhomach</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Rayo Vallecano">Rayo Vallecano</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="4276092">4.276.092 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.359999999999999">5.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="106.89999999999998">106</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Ciss</td>
-                <td class="py-2 px-3 text-gray-500">Rayo Vallecano</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">3.429.204 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.9</td>
-                <td class="py-2 px-3 text-center tabular-nums">170</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Ciss">Ciss</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Rayo Vallecano">Rayo Vallecano</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="3429204">3.429.204 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.93103448275862">5.9</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="170.4">170</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Maffeo</td>
-                <td class="py-2 px-3 text-gray-500">Mallorca</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">3.155.007 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">166</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Maffeo">Maffeo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Mallorca">Mallorca</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="3155007">3.155.007 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.377419354838708">5.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="166.40000000000003">166</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Lunin</td>
-                <td class="py-2 px-3 text-gray-500">Real Madrid</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">2.099.230 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">30</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Lunin">Lunin</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Real Madrid">Real Madrid</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="portero">portero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="2099230">2.099.230 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.099999999999999">5.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="30.599999999999998">30</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Javi Rueda</td>
-                <td class="py-2 px-3 text-gray-500">Celta de Vigo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.639.776 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">5.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">133</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Javi Rueda">Javi Rueda</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Celta de Vigo">Celta de Vigo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1639776">1.639.776 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="5.153846153846155">5.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="133.0">133</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Koski</td>
-                <td class="py-2 px-3 text-gray-500">Alavés</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.377.618 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">22</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Koski">Koski</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Alavés">Alavés</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1377618">1.377.618 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.42">4.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="22.599999999999998">22</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Unai Gómez</td>
-                <td class="py-2 px-3 text-gray-500">Athletic de Bilbao</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.332.199 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.1</td>
-                <td class="py-2 px-3 text-center tabular-nums">80</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Unai Gómez">Unai Gómez</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Athletic de Bilbao">Athletic de Bilbao</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1332199">1.332.199 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.096153846153846">3.1</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="80.1">80</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Caleta-Car</td>
-                <td class="py-2 px-3 text-gray-500">Real Sociedad</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.241.924 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.4</td>
-                <td class="py-2 px-3 text-center tabular-nums">119</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Caleta-Car">Caleta-Car</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Real Sociedad">Real Sociedad</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1241924">1.241.924 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.433333333333333">4.4</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="119.60000000000001">119</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Raúl</td>
-                <td class="py-2 px-3 text-gray-500">Osasuna</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.200.202 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.7</td>
-                <td class="py-2 px-3 text-center tabular-nums">133</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Raúl">Raúl</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Osasuna">Osasuna</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1200202">1.200.202 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.677777777777777">3.7</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="133.3">133</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Nacho Vidal</td>
-                <td class="py-2 px-3 text-gray-500">R. Oviedo</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.195.462 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">4.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">140</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Nacho Vidal">Nacho Vidal</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="R. Oviedo">R. Oviedo</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1195462">1.195.462 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="4.844827586206897">4.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="140.4">140</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Lekue</td>
-                <td class="py-2 px-3 text-gray-500">Athletic de Bilbao</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.033.508 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">1.8</td>
-                <td class="py-2 px-3 text-center tabular-nums">19</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Lekue">Lekue</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Athletic de Bilbao">Athletic de Bilbao</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1033508">1.033.508 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="1.7636363636363634">1.8</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="19.4">19</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Santamaria</td>
-                <td class="py-2 px-3 text-gray-500">Valencia</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.3</td>
-                <td class="py-2 px-3 text-center tabular-nums">63</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Santamaria">Santamaria</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Valencia">Valencia</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="centrocampista">centrocampista</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.3000000000000003">3.3</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="63.099999999999994">63</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Barja</td>
-                <td class="py-2 px-3 text-gray-500">Osasuna</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">2.6</td>
-                <td class="py-2 px-3 text-center tabular-nums">70</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Barja">Barja</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Osasuna">Osasuna</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="delantero">delantero</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="2.57037037037037">2.6</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="70.7">70</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr><tr>
-                <td class="py-2 px-3 font-medium">Davinchi</td>
-                <td class="py-2 px-3 text-gray-500">Getafe</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">1.000.000 €</td>
-                <td class="py-2 px-3 text-center tabular-nums">3.2</td>
-                <td class="py-2 px-3 text-center tabular-nums">44</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="Davinchi">Davinchi</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="Getafe">Getafe</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="defensa">defensa</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="1000000">1.000.000 €</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="3.2285714285714286">3.2</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="44.99999999999999">44</td>
 
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">28/05 03:50</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="1779940200.0">28/05 03:50</td>
             </tr></tbody>
                 </table>
             </div>
@@ -627,6 +679,37 @@
             }
         }
         document.getElementById("season-select").addEventListener("change", function () { changeSeason(this); });
+        function cellValue(row, index, type) {
+            const cell = row.cells[index];
+            const raw = cell.dataset.sortValue || cell.textContent.trim();
+            if (type === "number") {
+                const parsed = Number(String(raw).replace(/[^0-9,.-]/g, "").replace(",", "."));
+                return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+            }
+            return raw.toLocaleLowerCase("es");
+        }
+        function sortTable(table, columnIndex, type, direction) {
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.rows);
+            rows.sort((left, right) => {
+                const leftValue = cellValue(left, columnIndex, type);
+                const rightValue = cellValue(right, columnIndex, type);
+                if (leftValue < rightValue) return direction === "asc" ? -1 : 1;
+                if (leftValue > rightValue) return direction === "asc" ? 1 : -1;
+                return 0;
+            });
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        document.querySelectorAll("#current-market-table th[data-sort-type]").forEach((header, index) => {
+            header.addEventListener("click", () => {
+                const table = header.closest("table");
+                const currentDirection = header.dataset.sortDir || "";
+                const nextDirection = currentDirection === "asc" ? "desc" : "asc";
+                table.querySelectorAll("th[data-sort-type]").forEach(cell => cell.removeAttribute("data-sort-dir"));
+                header.dataset.sortDir = nextDirection;
+                sortTable(table, index, header.dataset.sortType, nextDirection);
+            });
+        });
     </script>
 </body>
 </html>

@@ -106,6 +106,7 @@ def load_market(path):
                 "price",
                 "computer",
                 "team",
+                "role",
                 "points",
                 "average",
                 "expiration_date",
@@ -133,6 +134,7 @@ def load_market(path):
                     "price": player.get("price"),
                     "computer": player.get("computer", False) or (player.get("userTeam") is None),
                     "team": player.get("team"),
+                    "role": player.get("role"),
                     "points": player.get("points"),
                     "average": avg_value,
                     "expiration_date": player.get("expirationDate"),
@@ -492,7 +494,7 @@ def generate_html(
             """
 
     market_rows = ""
-    market_colspan = 10 if show_lineup_columns else 6
+    market_colspan = 11 if show_lineup_columns else 7
     if current_market.empty:
         market_rows = table_empty(market_colspan, "Sin jugadores de mercado para esta temporada.")
     else:
@@ -505,26 +507,32 @@ def generate_html(
             if show_lineup_columns:
                 ff_prob = f"{int(row['ff_probability'])}%" if row.get("ff_probability") != "" and pd.notna(row.get("ff_probability")) else "-"
                 ff_context = " · ".join(part for part in [row.get("ff_match"), row.get("ff_home_away")] if part)
+                ff_prob_sort = row.get("ff_probability") if row.get("ff_probability") != "" and pd.notna(row.get("ff_probability")) else -1
                 lineup_cells = f"""
-                <td class="py-2 px-3">{esc(row.get('ff_status'))}</td>
-                <td class="py-2 px-3 text-center tabular-nums">{ff_prob}</td>
-                <td class="py-2 px-3 text-gray-500">{esc(ff_context)}</td>
-                <td class="py-2 px-3 font-semibold">{esc(row.get('ff_recommendation'))}</td>
+                <td class="py-2 px-3" data-sort-value="{esc(row.get('ff_status'))}">{esc(row.get('ff_status'))}</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{ff_prob_sort}">{ff_prob}</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="{esc(ff_context)}">{esc(ff_context)}</td>
+                <td class="py-2 px-3 font-semibold" data-sort-value="{esc(row.get('ff_recommendation'))}">{esc(row.get('ff_recommendation'))}</td>
                 """.strip()
+            price_sort = row["price"] if pd.notna(row["price"]) else -1
+            avg_sort = row["average"] if pd.notna(row["average"]) else -1
+            points_sort = row["points"] if pd.notna(row["points"]) else -1
+            exp_sort = row["expiration_date"].timestamp() if pd.notna(row["expiration_date"]) else 0
             market_rows += f"""
             <tr>
-                <td class="py-2 px-3 font-medium">{esc(row['name'])}</td>
-                <td class="py-2 px-3 text-gray-500">{esc(row['team'])}</td>
-                <td class="py-2 px-3 whitespace-nowrap tabular-nums">{price_str}</td>
-                <td class="py-2 px-3 text-center tabular-nums">{avg_str}</td>
-                <td class="py-2 px-3 text-center tabular-nums">{points_str}</td>
+                <td class="py-2 px-3 font-medium" data-sort-value="{esc(row['name'])}">{esc(row['name'])}</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="{esc(row['team'])}">{esc(row['team'])}</td>
+                <td class="py-2 px-3 text-gray-500" data-sort-value="{esc(row.get('role'))}">{esc(row.get('role'))}</td>
+                <td class="py-2 px-3 whitespace-nowrap tabular-nums" data-sort-value="{price_sort}">{price_str}</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{avg_sort}">{avg_str}</td>
+                <td class="py-2 px-3 text-center tabular-nums" data-sort-value="{points_sort}">{points_str}</td>
 {lineup_cells}
-                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap">{exp_str}</td>
+                <td class="py-2 px-3 text-sm text-orange-500 whitespace-nowrap" data-sort-value="{exp_sort}">{exp_str}</td>
             </tr>
             """.strip()
     lineup_headers = ""
     if show_lineup_columns:
-        lineup_headers = '<th class="py-2 px-3">Estado FF</th><th class="py-2 px-3 text-center">Prob.</th><th class="py-2 px-3">Partido</th><th class="py-2 px-3">Consejo</th>'
+        lineup_headers = '<th class="py-2 px-3" data-sort-type="text">Estado FF</th><th class="py-2 px-3 text-center" data-sort-type="number">Prob.</th><th class="py-2 px-3" data-sort-type="text">Partido</th><th class="py-2 px-3" data-sort-type="text">Consejo</th>'
 
     selector_options = render_season_selector(seasons, season)
     nav_links = render_nav_links(season, "market")
@@ -543,6 +551,10 @@ def generate_html(
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body {{ font-family: 'Inter', sans-serif; }}
         .tabular-nums {{ font-variant-numeric: tabular-nums; }}
+        th[data-sort-type] {{ cursor: pointer; user-select: none; white-space: nowrap; }}
+        th[data-sort-type]::after {{ content: "↕"; margin-left: 0.35rem; color: #9ca3af; font-size: 0.75rem; }}
+        th[data-sort-dir="asc"]::after {{ content: "↑"; color: #4338ca; }}
+        th[data-sort-dir="desc"]::after {{ content: "↓"; color: #4338ca; }}
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -620,9 +632,9 @@ def generate_html(
             <h2 class="text-xl font-bold">Mercado Actual ({len(current_market)} jugadores)</h2>
             <p class="mt-1 text-sm text-gray-600">Muestra todos los jugadores que siguen en el último snapshot del mercado y que vende la máquina, ordenados por plazo de compra más cercano y, en empate, por precio más alto. El partido mostrado es útil solo si el fichaje se puede cerrar antes del inicio de ese partido; si no, se marca como pendiente de la siguiente jornada.</p>
             <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
+                <table id="current-market-table" class="min-w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 text-xs uppercase text-gray-500">
-                        <tr><th class="py-2 px-3">Jugador</th><th class="py-2 px-3">Equipo</th><th class="py-2 px-3">Precio</th><th class="py-2 px-3 text-center">Promedio</th><th class="py-2 px-3 text-center">Puntos</th>{lineup_headers}<th class="py-2 px-3">Expira</th></tr>
+                        <tr><th class="py-2 px-3" data-sort-type="text">Jugador</th><th class="py-2 px-3" data-sort-type="text">Equipo</th><th class="py-2 px-3" data-sort-type="text">Posición</th><th class="py-2 px-3" data-sort-type="number">Precio</th><th class="py-2 px-3 text-center" data-sort-type="number">Promedio</th><th class="py-2 px-3 text-center" data-sort-type="number">Puntos</th>{lineup_headers}<th class="py-2 px-3" data-sort-type="number">Expira</th></tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">{market_rows}</tbody>
                 </table>
@@ -638,6 +650,37 @@ def generate_html(
             }}
         }}
         document.getElementById("season-select").addEventListener("change", function () {{ changeSeason(this); }});
+        function cellValue(row, index, type) {{
+            const cell = row.cells[index];
+            const raw = cell.dataset.sortValue || cell.textContent.trim();
+            if (type === "number") {{
+                const parsed = Number(String(raw).replace(/[^0-9,.-]/g, "").replace(",", "."));
+                return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+            }}
+            return raw.toLocaleLowerCase("es");
+        }}
+        function sortTable(table, columnIndex, type, direction) {{
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.rows);
+            rows.sort((left, right) => {{
+                const leftValue = cellValue(left, columnIndex, type);
+                const rightValue = cellValue(right, columnIndex, type);
+                if (leftValue < rightValue) return direction === "asc" ? -1 : 1;
+                if (leftValue > rightValue) return direction === "asc" ? 1 : -1;
+                return 0;
+            }});
+            rows.forEach(row => tbody.appendChild(row));
+        }}
+        document.querySelectorAll("#current-market-table th[data-sort-type]").forEach((header, index) => {{
+            header.addEventListener("click", () => {{
+                const table = header.closest("table");
+                const currentDirection = header.dataset.sortDir || "";
+                const nextDirection = currentDirection === "asc" ? "desc" : "asc";
+                table.querySelectorAll("th[data-sort-type]").forEach(cell => cell.removeAttribute("data-sort-dir"));
+                header.dataset.sortDir = nextDirection;
+                sortTable(table, index, header.dataset.sortType, nextDirection);
+            }});
+        }});
     </script>
 </body>
 </html>
