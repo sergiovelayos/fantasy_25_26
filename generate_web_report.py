@@ -332,7 +332,7 @@ def analyze_overbids(market, signings, current_values=None):
     buyer_stats = (
         matched.groupby("buyer", as_index=False)
         .agg(count=("player_id", "count"), avg_overbid=("overbid_pct", "mean"), spend=("price_s", "sum"))
-        .sort_values("avg_overbid", ascending=False)
+        .sort_values("buyer")
     )
     sales = signings.dropna(subset=["seller"]).copy()
     if sales.empty:
@@ -341,7 +341,7 @@ def analyze_overbids(market, signings, current_values=None):
     income = sales.groupby("seller", as_index=False).agg(income=("price", "sum")).rename(columns={"seller": "buyer"})
     buyer_stats = buyer_stats.merge(income, on="buyer", how="left")
     buyer_stats["income"] = buyer_stats["income"].fillna(0)
-    return buyer_stats
+    return buyer_stats.sort_values("buyer")
 
 
 def unique_market_offers(market):
