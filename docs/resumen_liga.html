@@ -19,7 +19,7 @@
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Futmondo PALETOS · 2026-2027</p>
                     <h1 class="mt-2 text-3xl font-extrabold text-slate-950 sm:text-4xl">Resumen de liga</h1>
-                    <p class="mt-2 text-sm text-slate-600">Actualizado: 15/08/2026 11:15</p>
+                    <p class="mt-2 text-sm text-slate-600">Actualizado: 16/08/2026 07:01</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:items-end">
                     <label class="text-xs font-bold uppercase text-slate-500" for="season-select">Temporada</label>
@@ -42,54 +42,94 @@
         <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Jornadas</p>
-                <p class="mt-2 text-3xl font-extrabold">0</p>
+                <p class="mt-2 text-3xl font-extrabold">1</p>
             </div>
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Equipos en liga</p>
-                <p class="mt-2 text-3xl font-extrabold">6</p>
+                <p class="mt-2 text-3xl font-extrabold">8</p>
             </div>
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Fichajes con comprador</p>
-                <p class="mt-2 text-3xl font-extrabold">25</p>
+                <p class="mt-2 text-3xl font-extrabold">35</p>
             </div>
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Gasto total</p>
-                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">509 M€</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">770 M€</p>
             </div>
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Ventas</p>
-                <p class="mt-2 text-3xl font-extrabold">13</p>
+                <p class="mt-2 text-3xl font-extrabold">22</p>
             </div>
             <div class="bg-white p-5 shadow-sm">
                 <p class="text-xs font-bold uppercase text-slate-500">Ingresos por ventas</p>
-                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">51 M€</p>
+                <p class="mt-2 whitespace-nowrap text-3xl font-extrabold">83 M€</p>
             </div>
         </section>
 
         
-        <section class="mt-8 border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950">
-            No hay histórico de clasificación por jornadas para esta temporada. Se muestran solo las métricas de mercado: fichajes, ventas, ingresos y balance.
+        
+        
+        <section class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold">Dominio por jornada</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Jornadas ganadas</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">1</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white p-5 shadow-sm">
+                <h2 class="text-xl font-bold">Ganador por vuelta</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr><th class="px-4 py-3">Vuelta</th><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-right">Puntos</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Primera vuelta</td><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">32,2</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
         </section>
-        
-        
-        
         <section class="mt-8 bg-white p-5 shadow-sm">
-            <h2 class="text-xl font-bold">Resumen de mercado</h2>
-            <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
-                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
-                        <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Neto</th></tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100"><tr>
+                <h2 class="text-xl font-bold">Resumen combinado</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
+                        <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Victorias</th><th class="px-4 py-3">Ritmo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Gasto</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Ingresos</th><th class="px-4 py-3 text-right">Neto</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100"><tr>
+            <td class="px-4 py-3 font-semibold">Sergio Velayos</td>
+            <td class="px-4 py-3 text-center tabular-nums">1</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 100.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">8</td>
+            <td class="px-4 py-3 text-right tabular-nums">128.666.660 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">4</td>
+            <td class="px-4 py-3 text-right tabular-nums">7.843.932 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-120.822.728 €</td>
+        </tr>
+<tr>
             <td class="px-4 py-3 font-semibold">Miguel</td>
-            <td class="px-4 py-3 text-center tabular-nums">7</td>
-            <td class="px-4 py-3 text-right tabular-nums">219.975.664 €</td>
-            <td class="px-4 py-3 text-center tabular-nums">3</td>
-            <td class="px-4 py-3 text-right tabular-nums">2.400.000 €</td>
-            <td class="px-4 py-3 text-right tabular-nums">-217.575.664 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">9</td>
+            <td class="px-4 py-3 text-right tabular-nums">372.188.986 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3 text-right tabular-nums">14.389.929 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-357.799.057 €</td>
         </tr>
 <tr>
             <td class="px-4 py-3 font-semibold">⭐⭐Heraso 🤴🏻</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
             <td class="px-4 py-3 text-center tabular-nums">7</td>
             <td class="px-4 py-3 text-right tabular-nums">115.245.610 €</td>
             <td class="px-4 py-3 text-center tabular-nums">6</td>
@@ -98,6 +138,10 @@
         </tr>
 <tr>
             <td class="px-4 py-3 font-semibold">Los soldados de Rubiales</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
             <td class="px-4 py-3 text-center tabular-nums">3</td>
             <td class="px-4 py-3 text-right tabular-nums">69.500.000 €</td>
             <td class="px-4 py-3 text-center tabular-nums">0</td>
@@ -106,14 +150,22 @@
         </tr>
 <tr>
             <td class="px-4 py-3 font-semibold">DiosSergio F.C</td>
-            <td class="px-4 py-3 text-center tabular-nums">4</td>
-            <td class="px-4 py-3 text-right tabular-nums">51.421.591 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">5</td>
+            <td class="px-4 py-3 text-right tabular-nums">55.921.591 €</td>
             <td class="px-4 py-3 text-center tabular-nums">2</td>
             <td class="px-4 py-3 text-right tabular-nums">22.898.888 €</td>
-            <td class="px-4 py-3 text-right tabular-nums">-28.522.703 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">-33.022.703 €</td>
         </tr>
 <tr>
             <td class="px-4 py-3 font-semibold">McNostril Team</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
             <td class="px-4 py-3 text-center tabular-nums">3</td>
             <td class="px-4 py-3 text-right tabular-nums">28.255.555 €</td>
             <td class="px-4 py-3 text-center tabular-nums">2</td>
@@ -121,15 +173,43 @@
             <td class="px-4 py-3 text-right tabular-nums">-26.161.902 €</td>
         </tr>
 <tr>
-            <td class="px-4 py-3 font-semibold">Sergio Velayos</td>
-            <td class="px-4 py-3 text-center tabular-nums">1</td>
-            <td class="px-4 py-3 text-right tabular-nums">24.666.666 €</td>
+            <td class="px-4 py-3 font-semibold">Alvaro Benito Camela</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
             <td class="px-4 py-3 text-center tabular-nums">0</td>
             <td class="px-4 py-3 text-right tabular-nums">0 €</td>
-            <td class="px-4 py-3 text-right tabular-nums">-24.666.666 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+        </tr>
+<tr>
+            <td class="px-4 py-3 font-semibold">Jesús Diego Cota</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+        </tr>
+<tr>
+            <td class="px-4 py-3 font-semibold">Northon</td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3">
+                <div class="h-2 bg-slate-200"><div class="h-2 bg-emerald-500" style="width: 0.0%"></div></div>
+            </td>
+            <td class="px-4 py-3 text-center tabular-nums">0</td>
+            <td class="px-4 py-3 text-right tabular-nums">0 €</td>
+            <td class="px-4 py-3 text-center tabular-nums">3</td>
+            <td class="px-4 py-3 text-right tabular-nums">12.100.071 €</td>
+            <td class="px-4 py-3 text-right tabular-nums">12.100.071 €</td>
         </tr></tbody>
-                </table>
-            </div>
+                    </table>
+                </div>
         </section>
         
         
@@ -141,12 +221,12 @@
                     <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
                         <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Fichajes</th><th class="px-4 py-3 text-right">Precio fichaje medio</th><th class="px-4 py-3 text-right">Fichaje más caro</th></tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Miguel</td><td class="px-4 py-3 text-center tabular-nums">7</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">31.425.095 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Gordon · 56.222.111 €</td></tr>
+                    <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">Miguel</td><td class="px-4 py-3 text-center tabular-nums">9</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">41.354.332 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Bellingham · 92.211.111 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">8</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">16.083.332 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Gerard Martín · 24.999.999 €</td></tr>
 <tr><td class="px-4 py-3">⭐⭐Heraso 🤴🏻</td><td class="px-4 py-3 text-center tabular-nums">7</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">16.463.659 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Baena · 42.000.000 €</td></tr>
 <tr><td class="px-4 py-3">Los soldados de Rubiales</td><td class="px-4 py-3 text-center tabular-nums">3</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">23.166.667 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Pubill · 33.000.000 €</td></tr>
-<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">4</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">12.855.398 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Unai Simón · 25.150.000 €</td></tr>
-<tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">3</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">9.418.518 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Zaid Romero · 17.022.222 €</td></tr>
-<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">1</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">24.666.666 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Aimar Oroz · 24.666.666 €</td></tr></tbody>
+<tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">5</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">11.184.318 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Unai Simón · 25.150.000 €</td></tr>
+<tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">3</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">9.418.518 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Zaid Romero · 17.022.222 €</td></tr></tbody>
                 </table>
             </div>
         </section>
@@ -159,7 +239,9 @@
                         <tr><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-center">Ventas</th><th class="px-4 py-3 text-right">Precio fichaje medio</th><th class="px-4 py-3 text-right">Venta más cara</th></tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100"><tr><td class="px-4 py-3">⭐⭐Heraso 🤴🏻</td><td class="px-4 py-3 text-center tabular-nums">6</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">3.960.793 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Militao · 9.764.922 €</td></tr>
-<tr><td class="px-4 py-3">Miguel</td><td class="px-4 py-3 text-center tabular-nums">3</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">800.000 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Campos · 800.000 €</td></tr>
+<tr><td class="px-4 py-3">Miguel</td><td class="px-4 py-3 text-center tabular-nums">5</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">2.877.986 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Ciss · 10.952.859 €</td></tr>
+<tr><td class="px-4 py-3">Sergio Velayos</td><td class="px-4 py-3 text-center tabular-nums">4</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">1.960.983 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Asp Jensen · 4.692.340 €</td></tr>
+<tr><td class="px-4 py-3">Northon</td><td class="px-4 py-3 text-center tabular-nums">3</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">4.033.357 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Aitor Ruibal · 5.897.979 €</td></tr>
 <tr><td class="px-4 py-3">DiosSergio F.C</td><td class="px-4 py-3 text-center tabular-nums">2</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">11.449.444 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Leo Román · 22.098.888 €</td></tr>
 <tr><td class="px-4 py-3">McNostril Team</td><td class="px-4 py-3 text-center tabular-nums">2</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">1.046.826 €</td><td class="px-4 py-3 whitespace-nowrap text-right tabular-nums">Fortuño · 1.057.168 €</td></tr></tbody>
                 </table>
@@ -167,9 +249,29 @@
         </section>
 
         
+        <section class="mt-8 bg-white p-5 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 class="text-xl font-bold">Clasificación acumulada</h2>
+                <label class="text-sm font-semibold text-slate-700">
+                    Jornada
+                    <select id="round-ranking-select" class="ml-2 border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-900">
+                        <option value="1" selected>1</option>
+                    </select>
+                </label>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="border-b bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr><th class="px-4 py-3 text-center">Ranking</th><th class="px-4 py-3">Equipo</th><th class="px-4 py-3 text-right">Puntos acumulados</th></tr>
+                    </thead>
+                    <tbody id="round-ranking-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+        
     </main>
     <script>
-        const cumulativeRankings = [];
+        const cumulativeRankings = [{"round": 1, "rank": 1, "team": "Sergio Velayos", "points": 32.2}, {"round": 1, "rank": 2, "team": "Alvaro Benito Camela", "points": 14.6}, {"round": 1, "rank": 3, "team": "Miguel", "points": 13.7}, {"round": 1, "rank": 4, "team": "⭐⭐Heraso 🤴🏻", "points": 11.8}, {"round": 1, "rank": 5, "team": "Los soldados de Rubiales", "points": 10.0}, {"round": 1, "rank": 6, "team": "DiosSergio F.C", "points": 6.0}, {"round": 1, "rank": 7, "team": "Northon", "points": 1.2}];
 
         function changeSeason(select) {
             const target = select.value;
